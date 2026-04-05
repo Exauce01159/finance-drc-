@@ -52,16 +52,17 @@
         }
 
         .header-rdc { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 5px; }
-
         .update-date { font-size: 0.8rem; color: #888; margin-bottom: 15px; }
 
-        input, button { 
+        /* Style amélioré pour les sélecteurs et inputs */
+        select, input, button { 
             width: 100%; padding: 14px; margin: 8px 0; border-radius: 10px; 
             border: 1px solid var(--border); background: var(--card); color: var(--text);
             font-size: 1rem; box-sizing: border-box;
         }
 
-        button { background: var(--primary); color: white; border: none; font-weight: bold; cursor: pointer; }
+        button { background: var(--primary); color: white; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        button:hover { opacity: 0.9; transform: translateY(-1px); }
         
         .btn-wa { 
             background: var(--whatsapp); color: white; text-decoration: none; 
@@ -85,23 +86,20 @@
             background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23ffc107" stroke="%23ffc107" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>');
         }
 
-        /* SECTION COMMENTAIRES AMÉLIORÉE */
         .comment-section { margin-top: 25px; padding-top: 15px; border-top: 1px dashed var(--border); text-align: left; }
         #listeDisplay { max-height: 200px; overflow-y: auto; margin-bottom: 10px; background: #f8f9fa; border-radius: 8px; padding: 5px; }
-        .comment-item { background: white; padding: 8px; border-radius: 5px; margin-bottom: 5px; border-left: 3px solid var(--primary); font-size: 0.85rem; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
-        .comment-section textarea { width: 100%; height: 60px; border-radius: 8px; border: 1px solid var(--border); padding: 10px; box-sizing: border-box; }
+        .comment-item { background: white; padding: 10px; border-radius: 5px; margin-bottom: 8px; border-left: 4px solid var(--primary); font-size: 0.85rem; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .comment-section textarea { width: 100%; height: 60px; border-radius: 8px; border: 1px solid var(--border); padding: 10px; box-sizing: border-box; resize: none; }
         .btn-comment { background: #6c757d; font-size: 0.85rem; height: 40px; padding: 0; margin-top: 5px; }
 
         .footer { margin-top: 30px; padding: 20px; text-align: center; font-size: 0.85rem; color: #666; width: 100%; max-width: 500px; }
         .footer a { color: var(--primary); text-decoration: none; font-weight: bold; }
-
-        @media (max-width: 1100px) { .side-pub { display: none; } }
     </style>
 </head>
 <body>
 
     <div class="pub-header">
-        <img src="https://via.placeholder.com/728x90.png?text=Espace+Publicité+Bannière" alt="Publicité">
+        <img src="https://via.placeholder.com/728x90.png?text=Finance+RDC+Pro+-+Calculateur+Taux+Direct" alt="Publicité">
     </div>
 
     <div class="container">
@@ -112,21 +110,29 @@
         
         <div id="dateUpdate" class="update-date">Chargement...</div>
 
-        <label style="display: block; text-align: left; font-weight: bold; font-size: 0.9rem;">Montant en Francs (CDF)</label>
+        <div style="text-align: left; margin-bottom: 10px;">
+            <label style="font-weight: bold; font-size: 0.9rem;">Sens de conversion</label>
+            <select id="direction" onchange="changerLabels()">
+                <option value="CDF_USD">Franc Congolais (CDF) ➔ Dollar (USD)</option>
+                <option value="USD_CDF">Dollar (USD) ➔ Franc Congolais (CDF)</option>
+            </select>
+        </div>
+
+        <label id="labelMontant" style="display: block; text-align: left; font-weight: bold; font-size: 0.9rem;">Montant en Francs (CDF)</label>
         <input type="number" id="montant" value="10000" oninput="calculer()">
 
         <button onclick="calculer()">Calculer maintenant</button>
         
         <a id="shareWA" class="btn-wa" href="#" target="_blank">Partager sur WhatsApp 📱</a>
 
-        <div id="resultat-principal" style="font-size: 1.3rem; font-weight: bold; margin: 15px 0; color: var(--primary);"></div>
+        <div id="resultat-principal" style="font-size: 1.3rem; font-weight: bold; margin: 15px 0; color: var(--primary); min-height: 1.5em;"></div>
 
         <table>
             <thead>
                 <tr>
                     <th>Banque</th>
-                    <th>Taux ($)</th>
-                    <th>Résultat</th>
+                    <th>Taux (1$)</th>
+                    <th id="thResultat">Résultat ($)</th>
                 </tr>
             </thead>
             <tbody id="tableBanques"></tbody>
@@ -149,7 +155,7 @@
         <div class="comment-section">
             <h4 style="margin: 0 0 10px 0;">Avis des utilisateurs</h4>
             <div id="listeDisplay">Chargement des avis...</div>
-            <input type="text" id="userName" placeholder="Ton nom" style="padding: 8px; margin-bottom: 5px;">
+            <input type="text" id="userName" placeholder="Ton nom" style="padding: 10px; margin-bottom: 5px; border-radius: 8px; border: 1px solid var(--border); width: 100%; box-sizing: border-box;">
             <textarea id="userComment" placeholder="Dites-moi comment améliorer l'app..."></textarea>
             <button class="btn-comment" id="btnFirebase">Publier mon avis</button>
         </div>
@@ -160,12 +166,12 @@
         <p>Étudiant en L1 Informatique - Université Kongo</p>
         <div style="margin-top: 8px;">
             <a href="https://github.com/Exauce01159" target="_blank">GitHub</a> • 
-            <a href="#" target="_blank">LinkedIn</a>
+            <a href="https://www.linkedin.com/in/exauc%C3%A9-kisiabongo-7a08b52a3/" target="_blank">LinkedIn</a>
         </div>
     </div>
 
 <script type="module">
-    // --- PARTIE FIREBASE (Moteur de commentaires) ---
+    // --- MOTEUR FIREBASE ---
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
@@ -182,24 +188,23 @@
     const db = getFirestore(app);
     const colRef = collection(db, "commentaires");
 
-    // Envoyer vers Firebase et WhatsApp
     document.getElementById('btnFirebase').onclick = async () => {
         const nom = document.getElementById('userName').value || "Anonyme";
         const com = document.getElementById('userComment').value;
-        const MON_NUMERO_WA = "243842317817"; // REMPLACE PAR TON NUMERO
+        const MON_NUMERO_WA = "243842317817"; 
 
         if(!com) return;
 
-        // 1. Sauvegarde dans Firebase
-        await addDoc(colRef, { nom: nom, message: com, date: serverTimestamp() });
-
-        // 2. Envoi notification WhatsApp
-        window.open(`https://wa.me/${MON_NUMERO_WA}?text=${encodeURIComponent("📝 Nouveau commentaire de " + nom + " : " + com)}`, '_blank');
-
-        document.getElementById('userComment').value = "";
+        try {
+            await addDoc(colRef, { nom: nom, message: com, date: serverTimestamp() });
+            const msgWA = `📝 Nouveau commentaire de ${nom} : ${com}`;
+            window.open(`https://wa.me/${MON_NUMERO_WA}?text=${encodeURIComponent(msgWA)}`, '_blank');
+            document.getElementById('userComment').value = "";
+        } catch (e) {
+            alert("Erreur lors de la publication");
+        }
     };
 
-    // Affichage en temps réel
     const q = query(colRef, orderBy("date", "desc"));
     onSnapshot(q, (snapshot) => {
         const display = document.getElementById('listeDisplay');
@@ -212,35 +217,71 @@
 </script>
 
 <script>
-    // --- TON CODE ORIGINAL (Calculs et Graphique) ---
+    // --- LOGIQUE CALCULS ---
     const tauxBanques = [
-        { nom: "Marché Parallèle", taux: 2300 },
-        { nom: "Rawbank", taux: 2280 },
-        { nom: "Equity BCDC", taux: 2285 },
-        { nom: "TMB", taux: 2275 }
+        { nom: "Marché Parallèle", taux: 2850 },
+        { nom: "Rawbank", taux: 2820 },
+        { nom: "Equity BCDC", taux: 2825 },
+        { nom: "TMB", taux: 2815 }
     ];
 
     let graphiqueInstance = null;
 
+    function changerLabels() {
+        const direction = document.getElementById('direction').value;
+        const labelMontant = document.getElementById('labelMontant');
+        const thResultat = document.getElementById('thResultat');
+        const montantInput = document.getElementById('montant');
+
+        if (direction === "CDF_USD") {
+            labelMontant.innerText = "Montant en Francs (CDF)";
+            thResultat.innerText = "Résultat ($)";
+            if(montantInput.value == 1) montantInput.value = 10000;
+        } else {
+            labelMontant.innerText = "Montant en Dollars (USD)";
+            thResultat.innerText = "Résultat (FC)";
+            if(montantInput.value == 10000) montantInput.value = 1;
+        }
+        calculer();
+    }
+
     function calculer() {
-        const montant = document.getElementById('montant').value;
+        const montant = parseFloat(document.getElementById('montant').value);
+        const direction = document.getElementById('direction').value;
         const tbody = document.getElementById('tableBanques');
         const resPrincipal = document.getElementById('resultat-principal');
         tbody.innerHTML = ""; 
 
-        if(!montant || montant <= 0) return;
+        if(!montant || montant <= 0) {
+            resPrincipal.innerText = "";
+            return;
+        }
 
         const tauxRef = tauxBanques[0].taux;
-        const totalRef = (montant / tauxRef).toFixed(2);
-        resPrincipal.innerText = `${montant} CDF ≈ ${totalRef} USD`;
+        let totalRef, uniteSource, uniteDest;
+
+        if (direction === "CDF_USD") {
+            totalRef = (montant / tauxRef).toFixed(2);
+            uniteSource = "CDF"; uniteDest = "USD";
+        } else {
+            totalRef = Math.round(montant * tauxRef).toLocaleString('fr-FR');
+            uniteSource = "USD"; uniteDest = "CDF";
+        }
+
+        resPrincipal.innerText = `${montant.toLocaleString('fr-FR')} ${uniteSource} ≈ ${totalRef} ${uniteDest}`;
 
         tauxBanques.forEach(banque => {
-            const conversion = montant / banque.taux;
-            tbody.innerHTML += `<tr><td>${banque.nom}</td><td class="taux-val">${banque.taux}</td><td>${conversion.toFixed(2)} $</td></tr>`;
+            let conversion;
+            if (direction === "CDF_USD") {
+                conversion = (montant / banque.taux).toFixed(2) + " $";
+            } else {
+                conversion = Math.round(montant * banque.taux).toLocaleString('fr-FR') + " FC";
+            }
+            tbody.innerHTML += `<tr><td>${banque.nom}</td><td class="taux-val">${banque.taux}</td><td>${conversion}</td></tr>`;
         });
 
         const urlSite = window.location.href;
-        const msg = `📊 *Finance RDC* \nTaux : 1$ = ${tauxRef} FC\nMes ${montant} FC valent *${totalRef}$*.\nCalculez le vôtre ici : ${urlSite}`;
+        const msg = `📊 *Finance RDC Pro*\nConversion : ${resPrincipal.innerText}\nCalculez le vôtre ici : ${urlSite}`;
         document.getElementById('shareWA').href = `https://wa.me/?text=${encodeURIComponent(msg)}`;
 
         genererGraphique();
@@ -254,31 +295,38 @@
             data: {
                 labels: tauxBanques.map(b => b.nom),
                 datasets: [{
-                    label: 'Taux (CDF pour 1$)',
+                    label: 'Taux de change (CDF pour 1$)',
                     data: tauxBanques.map(b => b.taux),
                     backgroundColor: ['#dc3545', '#007bff', '#6c757d', '#fd7e14'],
                     borderRadius: 5
                 }]
             },
-            options: { responsive: true, scales: { y: { beginAtZero: false, min: 2000 } } }
+            options: { 
+                responsive: true, 
+                scales: { y: { beginAtZero: false, min: 2000 } },
+                plugins: { legend: { display: false } }
+            }
         });
     }
 
     function afficherDate() {
-        const options = { year: 'numeric', month: 'long', day: 'numeric' };
-        document.getElementById('dateUpdate').innerText = "Dernière mise à jour : " + new Date().toLocaleDateString('fr-FR', options);
+        const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+        document.getElementById('dateUpdate').innerText = "Mise à jour : " + new Date().toLocaleDateString('fr-FR', options);
     }
 
     function recommander(note) {
         let texte = note >= 4 ? "Merci ! Partagez l'app avec vos amis !" : "Merci pour votre retour !";
         document.getElementById('rating-text').innerText = texte;
         if(note >= 4 && confirm("Voulez-vous recommander l'app sur WhatsApp ?")) {
-            const msg = `⭐ J'ai donné ${note}/5 à l'app Finance RDC Pro ! C'est super pratique. Teste-la : ${window.location.href}`;
+            const msg = `⭐ J'ai donné ${note}/5 à l'app Finance RDC Pro ! C'est super pratique pour les taux. Teste-la : ${window.location.href}`;
             window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
         }
     }
 
-    window.onload = function() { calculer(); afficherDate(); };
+    window.onload = function() { 
+        calculer(); 
+        afficherDate(); 
+    };
 </script>
 
 </body>

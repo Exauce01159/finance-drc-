@@ -211,7 +211,15 @@
 </script>
 
 <script>
-    // --- TAUX MIS À JOUR À 2300 FC ---
+    // --- ACTIVATION DU TÉLÉCHARGEMENT (SERVICE WORKER) ---
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('sw.js').then(() => {
+                console.log("Service Worker: Enregistré (Installation débloquée)");
+            }).catch(err => console.log("Erreur SW", err));
+        });
+    }
+
     const tauxBanques = [
         { nom: "Marché Parallèle", taux: 2300 },
         { nom: "Rawbank", taux: 2280 },

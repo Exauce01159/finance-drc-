@@ -3,12 +3,12 @@
   "name": "Finance RDC Pro - Taux & Change",
   "icons": [
     {
-      "src": "https://via.placeholder.com/192x192.png?text=RDC",
+      "src": "icon-app.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "https://via.placeholder.com/512x512.png?text=Finance+RDC",
+      "src": "icon-app.png",
       "type": "image/png",
       "sizes": "512x512"
     }

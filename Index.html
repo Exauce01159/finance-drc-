@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finance RDC Pro - Taux & Publicité</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg: #f0f2f5;
+            --card: #ffffff;
+            --text: #1c1e21;
+            --primary: #007bff;
+            --whatsapp: #25D366;
+            --border: #dee2e6;
+        }
+
+        /* Mode Sombre automatique si l'utilisateur le préfère */
+        [data-theme="dark"] {
+            --bg: #18191a;
+            --card: #242526;
+            --text: #e4e6eb;
+            --border: #3e4042;
+        }
+
+        body { 
+            font-family: 'Segoe UI', Roboto, sans-serif; 
+            background: var(--bg); 
+            color: var(--text); 
+            margin: 0; padding: 10px;
+            display: flex; flex-direction: column; align-items: center; 
+        }
+
+        /* ZONE PUB HAUT (Leaderboard) */
+        .pub-header { 
+            width: 100%; max-width: 728px; height: 90px; 
+            margin-bottom: 20px; border-radius: 8px; overflow: hidden;
+            background: #e9ecef; border: 1px dashed #adb5bd;
+        }
+        .pub-header img { width: 100%; height: 100%; object-fit: cover; }
+
+        .container { 
+            background: var(--card); padding: 20px; border-radius: 15px; 
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1); 
+            width: 100%; max-width: 500px; box-sizing: border-box;
+        }
+
+        .header-rdc { display: flex; align-items: center; justify-content: center; gap: 10px; }
+
+        input, select, button { 
+            width: 100%; padding: 14px; margin: 8px 0; border-radius: 10px; 
+            border: 1px solid var(--border); background: var(--card); color: var(--text);
+            font-size: 1rem; box-sizing: border-box;
+        }
+
+        button { background: var(--primary); color: white; border: none; font-weight: bold; cursor: pointer; }
+        
+        .btn-wa { 
+            background: var(--whatsapp); color: white; text-decoration: none; 
+            display: flex; align-items: center; justify-content: center; 
+            padding: 12px; border-radius: 10px; font-weight: bold; margin-bottom: 15px;
+        }
+
+        /* Tableau des Banques */
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 12px; border-bottom: 1px solid var(--border); text-align: left; font-size: 0.9rem; }
+        th { background: rgba(0,0,0,0.05); }
+        .taux-val { font-weight: bold; color: var(--primary); }
+
+        /* ZONE PUB LATÉRALE (Skyscraper) */
+        .side-pub { 
+            position: fixed; right: 20px; top: 120px; width: 160px; height: 600px; 
+            background: #e9ecef; border: 1px dashed #adb5bd; border-radius: 8px; overflow: hidden;
+        }
+
+        /* RESPONSIVE : On cache la pub latérale sur mobile */
+        @media (max-width: 1100px) {
+            .side-pub { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="pub-header">
+        <a href="https://votre-partenaire.com" target="_blank">
+            <img src="https://via.placeholder.com/728x90.png?text=Espace+Publicité+Bannière" alt="Publicité">
+        </a>
+    </div>
+
+    <div class="container">
+        <div class="header-rdc">
+            <span style="font-size: 1.8rem;">🇨🇩</span>
+            <h2 style="margin: 0;">Finance RDC Pro</h2>
+        </div>
+        
+        <label style="margin-top: 15px; display: block;">Montant en Francs (CDF)</label>
+        <input type="number" id="montant" value="10000" oninput="calculer()">
+
+        <button onclick="calculer()">Calculer maintenant</button>
+        
+        <a id="shareWA" class="btn-wa" href="#" target="_blank">
+            Partager sur WhatsApp 📱
+        </a>
+
+        <div id="resultat-principal" style="text-align: center; font-size: 1.2rem; font-weight: bold; margin: 10px 0;"></div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Banque</th>
+                    <th>Taux ($)</th>
+                    <th>Résultat</th>
+                </tr>
+            </thead>
+            <tbody id="tableBanques"></tbody>
+        </table>
+
+        <canvas id="monGraphique" style="margin-top: 25px;"></canvas>
+    </div>
+
+    <div class="side-pub">
+        <a href="https://votre-service.com" target="_blank">
+            <img src="https://via.placeholder.com/160x600.png?text=Votre+Pub+Ici" alt="Partenaire">
+        </a>
+    </div>
+
+<script>
+    // Données des banques (À mettre à jour manuellement selon les infos locales)
+    const tauxBanques = [
+        { nom: "Marché Parallèle", taux: 2850 },
+        { nom: "Rawbank", taux: 2780 },
+        { nom: "Equity BCDC", taux: 2795 },
+        { nom: "TMB", taux: 2775 }
+    ];
+
+    let graphiqueInstance = null;
+
+    function calculer() {
+        const montant = document.getElementById('montant').value;
+        const tbody = document.getElementById('tableBanques');
+        const resPrincipal = document.getElementById('resultat-principal');
+        tbody.innerHTML = ""; 
+
+        if(!montant || montant <= 0) return;
+
+        // On prend le taux du marché parallèle comme référence principale
+        const tauxRef = tauxBanques[0].taux;
+        const totalRef = (montant / tauxRef).toFixed(2);
+        resPrincipal.innerText = `${montant} CDF ≈ ${totalRef} USD`;
+
+        tauxBanques.forEach(banque => {
+            const conversion = montant / banque.taux;
+            tbody.innerHTML += `
+                <tr>
+                    <td>${banque.nom}</td>
+                    <td class="taux-val">${banque.taux}</td>
+                    <td>${conversion.toFixed(2)} $</td>
+                </tr>
+            `;
+        });
+
+        // Mise à jour du message WhatsApp
+        const urlSite = window.location.href;
+        const msg = `📊 *Finance RDC* \nTaux : 1$ = ${tauxRef} FC\nMes ${montant} FC valent *${totalRef}$*.\nCalculez le vôtre ici : ${urlSite}`;
+        document.getElementById('shareWA').href = `https://wa.me/?text=${encodeURIComponent(msg)}`;
+
+        genererGraphique();
+    }
+
+    function genererGraphique() {
+        const ctx = document.getElementById('monGraphique').getContext('2d');
+        if (graphiqueInstance) graphiqueInstance.destroy();
+
+        graphiqueInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: tauxBanques.map(b => b.nom),
+                datasets: [{
+                    label: 'Taux de change (CDF pour 1$)',
+                    data: tauxBanques.map(b => b.taux),
+                    backgroundColor: ['#dc3545', '#007bff', '#6c757d', '#fd7e14'],
+                    borderRadius: 5
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: { y: { beginAtZero: false, min: 2500 } }
+            }
+        });
+    }
+
+    // Lancement au chargement
+    window.onload = calculer;
+</script>
+
+</body>
+  </html>
+  

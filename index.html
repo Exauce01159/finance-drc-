@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finance RDC Pro - Taux & Publicité</title>
+    <title>Finance RDC Pro - Taux & Change</title>
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#007bff">
@@ -48,11 +48,14 @@
             background: var(--card); padding: 20px; border-radius: 15px; 
             box-shadow: 0 8px 24px rgba(0,0,0,0.1); 
             width: 100%; max-width: 500px; box-sizing: border-box;
+            text-align: center;
         }
 
-        .header-rdc { display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .header-rdc { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 5px; }
 
-        input, select, button { 
+        .update-date { font-size: 0.8rem; color: #888; margin-bottom: 15px; }
+
+        input, button { 
             width: 100%; padding: 14px; margin: 8px 0; border-radius: 10px; 
             border: 1px solid var(--border); background: var(--card); color: var(--text);
             font-size: 1rem; box-sizing: border-box;
@@ -71,22 +74,34 @@
         th { background: rgba(0,0,0,0.05); }
         .taux-val { font-weight: bold; color: var(--primary); }
 
-        .side-pub { 
-            position: fixed; right: 20px; top: 120px; width: 160px; height: 600px; 
-            background: #e9ecef; border: 1px dashed #adb5bd; border-radius: 8px; overflow: hidden;
+        .rating { margin: 15px 0; display: flex; flex-direction: row-reverse; justify-content: center; gap: 5px; }
+        .rating input { display: none; }
+        .rating label {
+            cursor: pointer; width: 30px; height: 30px;
+            background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23ccc" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>');
+            background-repeat: no-repeat; background-position: center; background-size: contain;
+        }
+        .rating input:checked ~ label, .rating label:hover, .rating label:hover ~ label {
+            background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23ffc107" stroke="%23ffc107" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>');
         }
 
-        @media (max-width: 1100px) {
-            .side-pub { display: none; }
-        }
+        /* SECTION COMMENTAIRES AMÉLIORÉE */
+        .comment-section { margin-top: 25px; padding-top: 15px; border-top: 1px dashed var(--border); text-align: left; }
+        #listeDisplay { max-height: 200px; overflow-y: auto; margin-bottom: 10px; background: #f8f9fa; border-radius: 8px; padding: 5px; }
+        .comment-item { background: white; padding: 8px; border-radius: 5px; margin-bottom: 5px; border-left: 3px solid var(--primary); font-size: 0.85rem; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .comment-section textarea { width: 100%; height: 60px; border-radius: 8px; border: 1px solid var(--border); padding: 10px; box-sizing: border-box; }
+        .btn-comment { background: #6c757d; font-size: 0.85rem; height: 40px; padding: 0; margin-top: 5px; }
+
+        .footer { margin-top: 30px; padding: 20px; text-align: center; font-size: 0.85rem; color: #666; width: 100%; max-width: 500px; }
+        .footer a { color: var(--primary); text-decoration: none; font-weight: bold; }
+
+        @media (max-width: 1100px) { .side-pub { display: none; } }
     </style>
 </head>
 <body>
 
     <div class="pub-header">
-        <a href="#" target="_blank">
-            <img src="https://via.placeholder.com/728x90.png?text=Espace+Publicité+Bannière" alt="Publicité">
-        </a>
+        <img src="https://via.placeholder.com/728x90.png?text=Espace+Publicité+Bannière" alt="Publicité">
     </div>
 
     <div class="container">
@@ -95,16 +110,16 @@
             <h2 style="margin: 0;">Finance RDC Pro</h2>
         </div>
         
-        <label style="margin-top: 15px; display: block;">Montant en Francs (CDF)</label>
+        <div id="dateUpdate" class="update-date">Chargement...</div>
+
+        <label style="display: block; text-align: left; font-weight: bold; font-size: 0.9rem;">Montant en Francs (CDF)</label>
         <input type="number" id="montant" value="10000" oninput="calculer()">
 
         <button onclick="calculer()">Calculer maintenant</button>
         
-        <a id="shareWA" class="btn-wa" href="#" target="_blank">
-            Partager sur WhatsApp 📱
-        </a>
+        <a id="shareWA" class="btn-wa" href="#" target="_blank">Partager sur WhatsApp 📱</a>
 
-        <div id="resultat-principal" style="text-align: center; font-size: 1.2rem; font-weight: bold; margin: 10px 0;"></div>
+        <div id="resultat-principal" style="font-size: 1.3rem; font-weight: bold; margin: 15px 0; color: var(--primary);"></div>
 
         <table>
             <thead>
@@ -118,15 +133,86 @@
         </table>
 
         <canvas id="monGraphique" style="margin-top: 25px;"></canvas>
+
+        <div style="margin-top: 30px;">
+            <h4 style="margin-bottom: 5px;">Notez l'application</h4>
+            <div class="rating">
+                <input type="radio" id="star5" name="rating" value="5" onclick="recommander(5)"><label for="star5"></label>
+                <input type="radio" id="star4" name="rating" value="4" onclick="recommander(4)"><label for="star4"></label>
+                <input type="radio" id="star3" name="rating" value="3" onclick="recommander(3)"><label for="star3"></label>
+                <input type="radio" id="star2" name="rating" value="2" onclick="recommander(2)"><label for="star2"></label>
+                <input type="radio" id="star1" name="rating" value="1" onclick="recommander(1)"><label for="star1"></label>
+            </div>
+            <p id="rating-text" style="font-size: 0.8rem; height: 15px;"></p>
+        </div>
+
+        <div class="comment-section">
+            <h4 style="margin: 0 0 10px 0;">Avis des utilisateurs</h4>
+            <div id="listeDisplay">Chargement des avis...</div>
+            <input type="text" id="userName" placeholder="Ton nom" style="padding: 8px; margin-bottom: 5px;">
+            <textarea id="userComment" placeholder="Dites-moi comment améliorer l'app..."></textarea>
+            <button class="btn-comment" id="btnFirebase">Publier mon avis</button>
+        </div>
     </div>
 
-    <div class="side-pub">
-        <a href="#" target="_blank">
-            <img src="https://via.placeholder.com/160x600.png?text=Votre+Pub+Ici" alt="Partenaire">
-        </a>
+    <div class="footer">
+        <p>Développé avec ❤️ par <strong>Exaucé Kisiabongo</strong></p>
+        <p>Étudiant en L1 Informatique - Université Kongo</p>
+        <div style="margin-top: 8px;">
+            <a href="https://github.com/Exauce01159" target="_blank">GitHub</a> • 
+            <a href="#" target="_blank">LinkedIn</a>
+        </div>
     </div>
+
+<script type="module">
+    // --- PARTIE FIREBASE (Moteur de commentaires) ---
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDr7swsZsXBJ72x7FpMXHA6YMN-76H43ZI",
+        authDomain: "mon-site-chat.firebaseapp.com",
+        projectId: "mon-site-chat",
+        storageBucket: "mon-site-chat.firebasestorage.app",
+        messagingSenderId: "408362473343",
+        appId: "1:408362473343:web:afa7ad876b271e4bf5ec4a"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const colRef = collection(db, "commentaires");
+
+    // Envoyer vers Firebase et WhatsApp
+    document.getElementById('btnFirebase').onclick = async () => {
+        const nom = document.getElementById('userName').value || "Anonyme";
+        const com = document.getElementById('userComment').value;
+        const MON_NUMERO_WA = "243XXXXXXXXX"; // REMPLACE PAR TON NUMERO
+
+        if(!com) return;
+
+        // 1. Sauvegarde dans Firebase
+        await addDoc(colRef, { nom: nom, message: com, date: serverTimestamp() });
+
+        // 2. Envoi notification WhatsApp
+        window.open(`https://wa.me/${MON_NUMERO_WA}?text=${encodeURIComponent("📝 Nouveau commentaire de " + nom + " : " + com)}`, '_blank');
+
+        document.getElementById('userComment').value = "";
+    };
+
+    // Affichage en temps réel
+    const q = query(colRef, orderBy("date", "desc"));
+    onSnapshot(q, (snapshot) => {
+        const display = document.getElementById('listeDisplay');
+        display.innerHTML = "";
+        snapshot.docs.forEach(doc => {
+            const d = doc.data();
+            display.innerHTML += `<div class="comment-item"><strong>${d.nom}</strong>: ${d.message}</div>`;
+        });
+    });
+</script>
 
 <script>
+    // --- TON CODE ORIGINAL (Calculs et Graphique) ---
     const tauxBanques = [
         { nom: "Marché Parallèle", taux: 2300 },
         { nom: "Rawbank", taux: 2280 },
@@ -150,13 +236,7 @@
 
         tauxBanques.forEach(banque => {
             const conversion = montant / banque.taux;
-            tbody.innerHTML += `
-                <tr>
-                    <td>${banque.nom}</td>
-                    <td class="taux-val">${banque.taux}</td>
-                    <td>${conversion.toFixed(2)} $</td>
-                </tr>
-            `;
+            tbody.innerHTML += `<tr><td>${banque.nom}</td><td class="taux-val">${banque.taux}</td><td>${conversion.toFixed(2)} $</td></tr>`;
         });
 
         const urlSite = window.location.href;
@@ -169,26 +249,36 @@
     function genererGraphique() {
         const ctx = document.getElementById('monGraphique').getContext('2d');
         if (graphiqueInstance) graphiqueInstance.destroy();
-
         graphiqueInstance = new Chart(ctx, {
             type: 'bar',
             data: {
                 labels: tauxBanques.map(b => b.nom),
                 datasets: [{
-                    label: 'Taux de change (CDF pour 1$)',
+                    label: 'Taux (CDF pour 1$)',
                     data: tauxBanques.map(b => b.taux),
                     backgroundColor: ['#dc3545', '#007bff', '#6c757d', '#fd7e14'],
                     borderRadius: 5
                 }]
             },
-            options: {
-                responsive: true,
-                scales: { y: { beginAtZero: false, min: 2000 } }
-            }
+            options: { responsive: true, scales: { y: { beginAtZero: false, min: 2000 } } }
         });
     }
 
-    window.onload = calculer;
+    function afficherDate() {
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('dateUpdate').innerText = "Dernière mise à jour : " + new Date().toLocaleDateString('fr-FR', options);
+    }
+
+    function recommander(note) {
+        let texte = note >= 4 ? "Merci ! Partagez l'app avec vos amis !" : "Merci pour votre retour !";
+        document.getElementById('rating-text').innerText = texte;
+        if(note >= 4 && confirm("Voulez-vous recommander l'app sur WhatsApp ?")) {
+            const msg = `⭐ J'ai donné ${note}/5 à l'app Finance RDC Pro ! C'est super pratique. Teste-la : ${window.location.href}`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+        }
+    }
+
+    window.onload = function() { calculer(); afficherDate(); };
 </script>
 
 </body>

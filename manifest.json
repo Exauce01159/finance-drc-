@@ -1,0 +1,20 @@
+{
+  "short_name": "FinanceRDC",
+  "name": "Finance RDC Pro - Taux & Change",
+  "icons": [
+    {
+      "src": "https://via.placeholder.com/192x192.png?text=RDC",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "https://via.placeholder.com/512x512.png?text=Finance+RDC",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "index.html",
+  "background_color": "#f0f2f5",
+  "display": "standalone",
+  "theme_color": "#007bff"
+}

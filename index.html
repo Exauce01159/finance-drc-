@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Finance RDC Pro - Taux & Publicité</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#007bff">
+    <link rel="apple-touch-icon" href="icon-app.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
@@ -15,7 +22,6 @@
             --border: #dee2e6;
         }
 
-        /* Mode Sombre automatique si l'utilisateur le préfère */
         [data-theme="dark"] {
             --bg: #18191a;
             --card: #242526;
@@ -31,7 +37,6 @@
             display: flex; flex-direction: column; align-items: center; 
         }
 
-        /* ZONE PUB HAUT (Leaderboard) */
         .pub-header { 
             width: 100%; max-width: 728px; height: 90px; 
             margin-bottom: 20px; border-radius: 8px; overflow: hidden;
@@ -61,19 +66,16 @@
             padding: 12px; border-radius: 10px; font-weight: bold; margin-bottom: 15px;
         }
 
-        /* Tableau des Banques */
         table { width: 100%; border-collapse: collapse; margin-top: 15px; }
         th, td { padding: 12px; border-bottom: 1px solid var(--border); text-align: left; font-size: 0.9rem; }
         th { background: rgba(0,0,0,0.05); }
         .taux-val { font-weight: bold; color: var(--primary); }
 
-        /* ZONE PUB LATÉRALE (Skyscraper) */
         .side-pub { 
             position: fixed; right: 20px; top: 120px; width: 160px; height: 600px; 
             background: #e9ecef; border: 1px dashed #adb5bd; border-radius: 8px; overflow: hidden;
         }
 
-        /* RESPONSIVE : On cache la pub latérale sur mobile */
         @media (max-width: 1100px) {
             .side-pub { display: none; }
         }
@@ -82,7 +84,7 @@
 <body>
 
     <div class="pub-header">
-        <a href="https://votre-partenaire.com" target="_blank">
+        <a href="#" target="_blank">
             <img src="https://via.placeholder.com/728x90.png?text=Espace+Publicité+Bannière" alt="Publicité">
         </a>
     </div>
@@ -119,13 +121,12 @@
     </div>
 
     <div class="side-pub">
-        <a href="https://votre-service.com" target="_blank">
+        <a href="#" target="_blank">
             <img src="https://via.placeholder.com/160x600.png?text=Votre+Pub+Ici" alt="Partenaire">
         </a>
     </div>
 
 <script>
-    // Données des banques (À mettre à jour manuellement selon les infos locales)
     const tauxBanques = [
         { nom: "Marché Parallèle", taux: 2850 },
         { nom: "Rawbank", taux: 2780 },
@@ -143,7 +144,6 @@
 
         if(!montant || montant <= 0) return;
 
-        // On prend le taux du marché parallèle comme référence principale
         const tauxRef = tauxBanques[0].taux;
         const totalRef = (montant / tauxRef).toFixed(2);
         resPrincipal.innerText = `${montant} CDF ≈ ${totalRef} USD`;
@@ -159,7 +159,6 @@
             `;
         });
 
-        // Mise à jour du message WhatsApp
         const urlSite = window.location.href;
         const msg = `📊 *Finance RDC* \nTaux : 1$ = ${tauxRef} FC\nMes ${montant} FC valent *${totalRef}$*.\nCalculez le vôtre ici : ${urlSite}`;
         document.getElementById('shareWA').href = `https://wa.me/?text=${encodeURIComponent(msg)}`;
@@ -189,10 +188,8 @@
         });
     }
 
-    // Lancement au chargement
     window.onload = calculer;
 </script>
 
 </body>
-  </html>
-  
+</html>

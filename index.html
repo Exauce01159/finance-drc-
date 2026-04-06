@@ -3,185 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finance RDC Pro - Taux & Change</title>
+    <title>Finance RDC Pro</title>
     
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#007bff">
-    <link rel="apple-touch-icon" href="icon-app.png">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-
+    <meta name="theme-color" content="#ffffff">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --bg: #f0f2f5;
-            --card: #ffffff;
-            --text: #1c1e21;
-            --primary: #007bff;
-            --whatsapp: #25D366;
-            --border: #dee2e6;
+            --bg: #f0f2f5; --card: #ffffff; --text: #1c1e21;
+            --primary: #007bff; --whatsapp: #2ecc71; --border: #dee2e6;
+            --accent-compta: #28a745; --premium: #f1c40f; --dark: #333333;
+            --inflation: #e74c3c; --money: #9b59b6;
         }
-
-        [data-theme="dark"] {
-            --bg: #18191a;
-            --card: #242526;
-            --text: #e4e6eb;
-            --border: #3e4042;
-        }
-
-        body { 
-            font-family: 'Segoe UI', Roboto, sans-serif; 
-            background: var(--bg); 
-            color: var(--text); 
-            margin: 0; padding: 10px;
-            display: flex; flex-direction: column; align-items: center; 
-        }
-
-        .pub-header { 
-            width: 100%; max-width: 728px; height: 90px; 
-            margin-bottom: 20px; border-radius: 8px; overflow: hidden;
-            background: #e9ecef; border: 1px dashed #adb5bd;
-        }
-        .pub-header img { width: 100%; height: 100%; object-fit: cover; }
-
-        .container { 
-            background: var(--card); padding: 20px; border-radius: 15px; 
-            box-shadow: 0 8px 24px rgba(0,0,0,0.1); 
-            width: 100%; max-width: 500px; box-sizing: border-box;
-            text-align: center;
-        }
-
-        .header-rdc { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 5px; }
-        .update-date { font-size: 0.8rem; color: #888; margin-bottom: 15px; }
-
-        select, input, button { 
-            width: 100%; padding: 14px; margin: 8px 0; border-radius: 10px; 
-            border: 1px solid var(--border); background: var(--card); color: var(--text);
-            font-size: 1rem; box-sizing: border-box;
-        }
-
-        button { background: var(--primary); color: white; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        button:hover { opacity: 0.9; transform: translateY(-1px); }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
+        .container { background: var(--card); padding: 20px; border-radius: 15px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); width: 100%; max-width: 500px; box-sizing: border-box; text-align: center; }
         
-        .btn-wa { 
-            background: var(--whatsapp); color: white; text-decoration: none; 
-            display: flex; align-items: center; justify-content: center; 
-            padding: 12px; border-radius: 10px; font-weight: bold; margin-bottom: 15px;
-        }
+        /* Splash Screen - Ajout du curseur pointer pour indiquer qu'on peut cliquer pour fermer */
+        .modal-auto { display: flex; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: #ffffff; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.6s ease, visibility 0.6s; cursor: pointer; }
+        .logo-splash { width: 130px; height: 130px; border-radius: 28px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); animation: app-bounce 1.8s infinite ease-in-out; }
+        @keyframes app-bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { padding: 12px; border-bottom: 1px solid var(--border); text-align: left; font-size: 0.9rem; }
-        th { background: rgba(0,0,0,0.05); }
-        .taux-val { font-weight: bold; color: var(--primary); }
+        .update-date { font-size: 0.8rem; color: #007bff; margin-bottom: 15px; font-weight: 500; }
+        .section-tool { margin-top: 15px; padding: 15px; border-radius: 12px; border: 1px solid var(--border); text-align: left; }
+        
+        /* Modaux */
+        .modal-payant { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        .modal-content { background: var(--card); padding: 30px; border-radius: 30px; width: 90%; max-width: 380px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+        .modal-title { font-size: 1.6rem; font-weight: bold; color: var(--dark); margin-bottom: 10px; }
+        
+        .btn-pay { background: var(--whatsapp); color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; font-weight: bold; font-size: 1.1rem; cursor: pointer; margin-bottom: 20px; transition: 0.3s; }
 
-        .rating { margin: 15px 0; display: flex; flex-direction: row-reverse; justify-content: center; gap: 5px; }
-        .rating input { display: none; }
-        .rating label {
-            cursor: pointer; width: 30px; height: 30px;
-            background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23ccc" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>');
-            background-repeat: no-repeat; background-position: center; background-size: contain;
-        }
-        .rating input:checked ~ label, .rating label:hover, .rating label:hover ~ label {
-            background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23ffc107" stroke="%23ffc107" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>');
-        }
+        .input-code { width: 100%; padding: 12px; border: 2px solid var(--premium); border-radius: 10px; text-align: center; font-size: 1rem; margin-bottom: 15px; outline: none; }
+        .btn-activate { background: var(--dark); color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; font-weight: bold; font-size: 1rem; cursor: pointer; }
 
-        .comment-section { margin-top: 25px; padding-top: 15px; border-top: 1px dashed var(--border); text-align: left; }
-        #listeDisplay { max-height: 200px; overflow-y: auto; margin-bottom: 10px; background: #f8f9fa; border-radius: 8px; padding: 5px; }
-        .comment-item { background: white; padding: 10px; border-radius: 5px; margin-bottom: 8px; border-left: 4px solid var(--primary); font-size: 0.85rem; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
-        .comment-section textarea { width: 100%; height: 60px; border-radius: 8px; border: 1px solid var(--border); padding: 10px; box-sizing: border-box; resize: none; }
-        .btn-comment { background: #6c757d; font-size: 0.85rem; height: 40px; padding: 0; margin-top: 5px; }
+        #premiumFeatures { display: none; margin-top: 20px; border-top: 2px dashed var(--premium); padding-top: 10px; }
+        .compta-tool { border-left: 5px solid var(--accent-compta); background: rgba(40, 167, 69, 0.03); margin-bottom: 10px; }
+        .stock-tool { border-left: 5px solid var(--premium); background: rgba(255, 215, 0, 0.03); margin-bottom: 10px;}
+        .inflation-tool { border-left: 5px solid var(--inflation); background: rgba(231, 76, 60, 0.03); margin-bottom: 10px;}
+        .money-tool { border-left: 5px solid var(--money); background: rgba(155, 89, 182, 0.03); }
 
-        .footer { margin-top: 30px; padding: 20px; text-align: center; font-size: 0.85rem; color: #666; width: 100%; max-width: 500px; }
-        .footer a { color: var(--primary); text-decoration: none; font-weight: bold; }
+        .btn-info { background: none; color: var(--primary); border: 1px solid var(--primary); padding: 6px 18px; font-size: 0.8rem; border-radius: 20px; cursor: pointer; }
+        .btn-main { width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: none; background: var(--primary); color: white; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .btn-wa-share { background: var(--whatsapp); color: white; text-decoration: none; display: flex; align-items: center; justify-content: center; padding: 12px; border-radius: 10px; font-weight: bold; margin-bottom: 15px; }
+
+        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid var(--border); box-sizing: border-box; font-family: inherit; font-size: 0.95rem; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-top: 15px; }
+        th, td { padding: 8px; border-bottom: 1px solid var(--border); text-align: left; }
+        
+        #aboutSection { display: none; font-size: 0.75rem; margin: 10px 0; padding: 10px; background: #f8f9fa; border-radius: 10px; text-align: left; line-height: 1.4; }
+
+        .comment-container { text-align: left; margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px; width: 100%; }
+        .comment-item { background: #f0f2f5; padding: 12px 15px; border-radius: 18px; margin-bottom: 12px; font-size: 0.9rem; position: relative; border-bottom-left-radius: 2px; max-width: 90%; }
+        .comment-item b { color: var(--primary); display: block; font-size: 0.8rem; margin-bottom: 4px; text-transform: capitalize; }
+        #listeDisplay { max-height: 250px; overflow-y: auto; margin: 15px 0; padding-right: 5px; display: flex; flex-direction: column; }
+        
+        /* Aide Installation Styles */
+        .help-box { text-align: left; background: #f9f9f9; padding: 12px; border-radius: 10px; margin-bottom: 10px; font-size: 0.85rem; border-left: 4px solid var(--primary); }
     </style>
 </head>
 <body>
 
-    <div class="pub-header">
-        <img src="https://via.placeholder.com/728x90.png?text=Finance+RDC+Pro+-+Taux+Actuel+2300+FC" alt="Publicité">
+    <div id="autoSplash" class="modal-auto" onclick="fermerSplash()">
+        <img src="icon-app.png" alt="Logo" class="logo-splash">
+        <p style="margin-top: 20px; font-weight: bold; color: #007bff; font-size: 1.1rem;">Chargement...</p>
+    </div>
+
+    <div id="helpModal" class="modal-payant">
+        <div class="modal-content">
+            <div class="modal-title">📲 Installer l'App</div>
+            <div class="help-box">
+                <b>Android (Chrome) :</b><br>
+                Appuyez sur les 3 points ⋮ puis sur <b>"Installer l'application"</b>.
+            </div>
+            <div class="help-box">
+                <b>iPhone (Safari) :</b><br>
+                Appuyez sur "Partager" ⬆️ puis sur <b>"Sur l'écran d'accueil"</b> ➕.
+            </div>
+            <button id="pwaBtn" class="btn-main" style="display:none; background:var(--whatsapp);">Installer Maintenant</button>
+            <button class="btn-info" onclick="fermerHelp()" style="border:none; margin-top:10px; color:#999;">Fermer</button>
+        </div>
+    </div>
+
+    <div id="premiumModal" class="modal-payant">
+        <div class="modal-content">
+            <div class="modal-title" style="color:var(--premium)">💎 Zone Premium</div>
+            <p class="modal-desc">Débloquez les outils avancés immédiatement via Mobile Money.</p>
+            <button class="btn-pay" onclick="ouvrirPaiementDirect()">📲 Acheter par Mobile Money (1 $)</button>
+            <div class="activation-zone" style="border-top: 1px solid #eee; padding-top: 15px;">
+                <input type="text" id="licenseCode" class="input-code" placeholder="UK-XXXX">
+                <button class="btn-activate" onclick="verifierCode()">Vérifier & Activer</button>
+            </div>
+            <button class="btn-info" onclick="fermerModal()" style="border:none; margin-top:15px; color:#999;">Plus tard</button>
+        </div>
     </div>
 
     <div class="container">
-        <div class="header-rdc">
-            <span style="font-size: 1.8rem;">🇨🇩</span>
-            <h2 style="margin: 0;">Finance RDC Pro</h2>
+        <div style="display:flex; align-items:center; justify-content:center; gap:10px;">
+            <span style="font-size:1.5rem;">🇨🇩</span>
+            <h2 style="margin:10px 0;">Finance RDC Pro</h2>
         </div>
-        
         <div id="dateUpdate" class="update-date">Mise à jour en cours...</div>
 
-        <div style="text-align: left; margin-bottom: 10px;">
-            <label style="font-weight: bold; font-size: 0.9rem;">Sens de conversion</label>
-            <select id="direction" onchange="changerLabels()">
-                <option value="CDF_USD">Franc Congolais (CDF) ➔ Dollar (USD)</option>
-                <option value="USD_CDF">Dollar (USD) ➔ Franc Congolais (CDF)</option>
+        <div style="display: flex; gap: 8px; justify-content: center; margin-bottom: 15px; flex-wrap: wrap;">
+            <button class="btn-info" onclick="toggleAbout()">ℹ️ Infos</button>
+            <button class="btn-info" onclick="ouvrirHelp()" style="border-color:#333; color:#333;">❓ Aide</button>
+            <button id="btnStatus" class="btn-info" style="border-color:var(--premium); color:#d4af37;" onclick="ouvrirModal()">💎 Premium</button>
+        </div>
+
+        <div id="aboutSection">
+            <b>Finance RDC Pro</b> v2.7<br>
+            Développé par <b>Exaucé Kisiabongo (UK)</b>.<br>
+            Outils avancés pour commerçants et entrepreneurs en RDC.
+        </div>
+
+        <div class="section-tool">
+            <select id="direction" onchange="calculerTout()">
+                <option value="CDF_USD">Franc (CDF) ➔ Dollar (USD)</option>
+                <option value="USD_CDF">Dollar (USD) ➔ Franc (CDF)</option>
             </select>
+            <input type="number" id="montant" value="10000" oninput="calculerTout()">
+            <div id="resultat-principal" style="font-size: 1.4rem; font-weight: bold; color: var(--primary); margin: 10px 0;"></div>
+            <a id="shareWA" class="btn-wa-share" href="#" target="_blank">Partager sur WhatsApp 📱</a>
         </div>
 
-        <label id="labelMontant" style="display: block; text-align: left; font-weight: bold; font-size: 0.9rem;">Montant en Francs (CDF)</label>
-        <input type="number" id="montant" value="10000" oninput="calculer()">
-
-        <button onclick="calculer()">Calculer maintenant</button>
-        
-        <a id="shareWA" class="btn-wa" href="#" target="_blank">Partager sur WhatsApp 📱</a>
-
-        <div id="resultat-principal" style="font-size: 1.3rem; font-weight: bold; margin: 15px 0; color: var(--primary); min-height: 1.5em;"></div>
-
-        <table>
-            <thead>
-                <tr>
-                    <th>Banque</th>
-                    <th>Taux (1$)</th>
-                    <th id="thResultat">Résultat ($)</th>
-                </tr>
-            </thead>
-            <tbody id="tableBanques"></tbody>
-        </table>
-
-        <canvas id="monGraphique" style="margin-top: 25px;"></canvas>
-
-        <div style="margin-top: 30px;">
-            <h4 style="margin-bottom: 5px;">Notez l'application</h4>
-            <div class="rating">
-                <input type="radio" id="star5" name="rating" value="5" onclick="recommander(5)"><label for="star5"></label>
-                <input type="radio" id="star4" name="rating" value="4" onclick="recommander(4)"><label for="star4"></label>
-                <input type="radio" id="star3" name="rating" value="3" onclick="recommander(3)"><label for="star3"></label>
-                <input type="radio" id="star2" name="rating" value="2" onclick="recommander(2)"><label for="star2"></label>
-                <input type="radio" id="star1" name="rating" value="1" onclick="recommander(1)"><label for="star1"></label>
+        <div id="premiumFeatures">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
+                <h3 style="color:var(--premium); font-size: 1rem; margin: 0;">🚀 Outils Business Pro</h3>
+                <button onclick="verrouillerPremium()" style="background:none; border:1px solid #ccc; border-radius:10px; font-size:0.7rem; cursor:pointer; padding: 2px 8px;">🔒 Verrouiller</button>
             </div>
-            <p id="rating-text" style="font-size: 0.8rem; height: 15px;"></p>
+
+            <div class="section-tool compta-tool">
+                <h4 style="margin:0 0 10px 0; color:var(--accent-compta)">📊 Marge & Bénéfice</h4>
+                <input type="number" id="achatUSD" placeholder="Prix d'achat ($)" oninput="calculerCompta()">
+                <input type="number" id="venteCDF" placeholder="Prix de vente (FC)" oninput="calculerCompta()">
+                <div id="resultMarge" style="font-weight:bold; color:var(--accent-compta);">Bénéfice : 0 FC</div>
+            </div>
+
+            <div class="section-tool inflation-tool">
+                <h4 style="margin:0 0 10px 0; color:var(--inflation)">📉 Alerte Inflation</h4>
+                <input type="number" id="prixActuel" placeholder="Prix actuel (FC)" oninput="calculerInflation()">
+                <input type="number" id="tauxFutur" placeholder="Taux futur prévu" oninput="calculerInflation()">
+                <div id="resultInflation" style="font-weight:bold; color:var(--inflation);">Nouveau prix : 0 FC</div>
+            </div>
+
+            <div class="section-tool stock-tool">
+                <h4 style="margin:0 0 10px 0; color:#856404">📦 Valeur du Stock</h4>
+                <input type="number" id="stockQty" placeholder="Quantité" oninput="calculerStock()">
+                <input type="number" id="unitPrice" placeholder="Prix unitaire ($)" oninput="calculerStock()">
+                <div id="resultStock" style="font-weight:bold;">Total Stock : 0 $</div>
+            </div>
+
+            <div class="section-tool money-tool">
+                <h4 style="margin:0 0 10px 0; color:var(--money)">💸 Frais de Retrait</h4>
+                <input type="number" id="montantRetrait" placeholder="Montant (FC)" oninput="calculerFrais()">
+                <div id="resultFrais" style="font-weight:bold; color:var(--money);">Frais : 0 FC</div>
+            </div>
         </div>
 
-        <div class="comment-section">
-            <h4 style="margin: 0 0 10px 0;">Avis des utilisateurs</h4>
-            <div id="listeDisplay">Chargement des avis...</div>
-            <input type="text" id="userName" placeholder="Ton nom" style="padding: 10px; margin-bottom: 5px; border-radius: 8px; border: 1px solid var(--border); width: 100%; box-sizing: border-box;">
-            <textarea id="userComment" placeholder="Un avis ? Une suggestion ?"></textarea>
-            <button class="btn-comment" id="btnFirebase">Publier mon avis</button>
+        <div style="overflow-x:auto;">
+            <table>
+                <thead><tr><th>Banques de RDC</th><th>Taux (1$)</th><th>Conversion</th></tr></thead>
+                <tbody id="tableBanques"></tbody>
+            </table>
         </div>
-    </div>
 
-    <div class="footer">
-        <p>Développé par <strong>Exaucé Kisiabongo</strong></p>
-        <p>Étudiant en L1 Informatique - Université Kongo</p>
-        <div style="margin-top: 8px;">
-            <a href="https://github.com/Exauce01159" target="_blank">GitHub</a> • 
-            <a href="https://www.linkedin.com/in/exauc%C3%A9-kisiabongo-7a08b52a3/" target="_blank">LinkedIn</a>
+        <canvas id="monGraphique" style="margin-top:20px; max-height: 200px;"></canvas>
+
+        <div class="comment-container">
+            <h3 style="margin:0; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">💬 Avis des utilisateurs</h3>
+            <div id="listeDisplay"></div>
+            
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 12px; border: 1px solid #eee;">
+                <input type="text" id="userName" placeholder="Votre nom">
+                <textarea id="userComment" placeholder="Votre message..." rows="3"></textarea>
+                <button class="btn-main" id="btnFirebase">Publier mon avis</button>
+            </div>
         </div>
     </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-    const firebaseConfig = {
-        apiKey: "AIzaSyDr7swsZsXBJ72x7FpMXHA6YMN-76H43ZI",
-        authDomain: "mon-site-chat.firebaseapp.com",
-        projectId: "mon-site-chat",
-        storageBucket: "mon-site-chat.firebasestorage.app",
-        messagingSenderId: "408362473343",
-        appId: "1:408362473343:web:afa7ad876b271e4bf5ec4a"
-    };
-
+    
+    const firebaseConfig = { apiKey: "AIzaSyDr7swsZsXBJ72x7FpMXHA6YMN-76H43ZI", authDomain: "mon-site-chat.firebaseapp.com", projectId: "mon-site-chat", storageBucket: "mon-site-chat.firebasestorage.app", messagingSenderId: "408362473343", appId: "1:408362473343:web:afa7ad876b271e4bf5ec4a" };
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const colRef = collection(db, "commentaires");
@@ -189,143 +193,160 @@
     document.getElementById('btnFirebase').onclick = async () => {
         const nom = document.getElementById('userName').value || "Anonyme";
         const com = document.getElementById('userComment').value;
-        if(!com) return;
-
-        try {
-            await addDoc(colRef, { nom: nom, message: com, date: serverTimestamp() });
-            document.getElementById('userComment').value = "";
-        } catch (e) {
-            console.error("Erreur Firebase");
+        if(com.trim()) { 
+            await addDoc(colRef, { nom, message: com, date: serverTimestamp() }); 
+            document.getElementById('userComment').value = ""; 
         }
     };
 
-    const q = query(colRef, orderBy("date", "desc"));
-    onSnapshot(q, (snapshot) => {
+    onSnapshot(query(colRef, orderBy("date", "desc")), (snap) => {
         const display = document.getElementById('listeDisplay');
         display.innerHTML = "";
-        snapshot.docs.forEach(doc => {
-            const d = doc.data();
-            display.innerHTML += `<div class="comment-item"><strong>${d.nom}</strong>: ${d.message}</div>`;
+        snap.docs.forEach(doc => { 
+            const d = doc.data(); 
+            display.innerHTML += `<div class="comment-item"><b>${d.nom}</b><span>${d.message}</span></div>`; 
         });
     });
 </script>
 
 <script>
-    // --- ACTIVATION DU TÉLÉCHARGEMENT (SERVICE WORKER) ---
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('sw.js').then(() => {
-                console.log("Service Worker: Enregistré (Installation débloquée)");
-            }).catch(err => console.log("Erreur SW", err));
-        });
-    }
-
-    const tauxBanques = [
-        { nom: "Marché Parallèle", taux: 2300 },
-        { nom: "Rawbank", taux: 2280 },
-        { nom: "Equity BCDC", taux: 2285 },
-        { nom: "TMB", taux: 2275 }
+    const MON_CODE_PRO = "UK-2026"; 
+    let tauxBanques = [
+        { nom: "Marché Central", taux: 2850 },
+        { nom: "Rawbank", taux: 2835 },
+        { nom: "Equity BCDC", taux: 2840 },
+        { nom: "TMB", taux: 2825 },
+        { nom: "Ecobank", taux: 2845 }
     ];
 
-    let graphiqueInstance = null;
-
-    function changerLabels() {
-        const direction = document.getElementById('direction').value;
-        const labelMontant = document.getElementById('labelMontant');
-        const thResultat = document.getElementById('thResultat');
-        const montantInput = document.getElementById('montant');
-
-        if (direction === "CDF_USD") {
-            labelMontant.innerText = "Montant en Francs (CDF)";
-            thResultat.innerText = "Résultat ($)";
-            if(montantInput.value == 1) montantInput.value = 10000;
-        } else {
-            labelMontant.innerText = "Montant en Dollars (USD)";
-            thResultat.innerText = "Résultat (FC)";
-            if(montantInput.value == 10000) montantInput.value = 1;
+    // --- GESTION SPLASH SCREEN (SÉCURISÉE) ---
+    function fermerSplash() {
+        const splash = document.getElementById('autoSplash');
+        if(splash) {
+            splash.style.opacity = '0';
+            setTimeout(() => { splash.style.display = 'none'; }, 600);
         }
-        calculer();
+    }
+    // Fermeture automatique après 3 secondes même si bug
+    setTimeout(fermerSplash, 3000);
+
+    // --- GESTION INSTALLATION (PWA) ---
+    let instPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        instPrompt = e;
+        document.getElementById('pwaBtn').style.display = 'block';
+    });
+
+    document.getElementById('pwaBtn').addEventListener('click', async () => {
+        if (instPrompt) {
+            instPrompt.prompt();
+            instPrompt = null;
+            fermerHelp();
+        }
+    });
+
+    function ouvrirHelp() { document.getElementById('helpModal').style.display = 'flex'; }
+    function fermerHelp() { document.getElementById('helpModal').style.display = 'none'; }
+
+    // --- LOGIQUE PREMIUM ---
+    function verifierCode() {
+        const code = document.getElementById('licenseCode').value.trim().toUpperCase();
+        if(code === MON_CODE_PRO) {
+            document.getElementById('premiumFeatures').style.display = 'block';
+            document.getElementById('btnStatus').style.display = 'none';
+            fermerModal();
+            alert("✅ Zone Premium débloquée !");
+        } else { alert("❌ Code incorrect."); }
     }
 
-    function calculer() {
-        const montant = parseFloat(document.getElementById('montant').value);
-        const direction = document.getElementById('direction').value;
+    function verrouillerPremium() {
+        document.getElementById('premiumFeatures').style.display = 'none';
+        document.getElementById('btnStatus').style.display = 'inline-block';
+    }
+
+    function ouvrirModal() { document.getElementById('premiumModal').style.display = 'flex'; }
+    function fermerModal() { document.getElementById('premiumModal').style.display = 'none'; }
+    
+    function toggleAbout() { 
+        const s = document.getElementById('aboutSection'); 
+        s.style.display = (s.style.display === 'block' ? 'none' : 'block'); 
+    }
+    
+    function ouvrirPaiementDirect() { 
+        const message = "Bonjour Exaucé, je souhaite payer 1 $ pour l'accès Premium Finance RDC Pro.";
+        window.open(`https://wa.me/243842317817?text=${encodeURIComponent(message)}`, '_blank');
+    }
+
+    // --- CALCULS & TAUX ---
+    async function chargerTauxReels() {
+        try {
+            const res = await fetch('https://open.er-api.com/v6/latest/USD');
+            const data = await res.json();
+            const tauxRef = Math.round(data.rates.CDF);
+            tauxBanques[0].taux = tauxRef;
+            tauxBanques[1].taux = tauxRef - 15;
+            tauxBanques[2].taux = tauxRef - 10;
+            tauxBanques[3].taux = tauxRef - 25;
+            tauxBanques[4].taux = tauxRef - 5;
+        } catch(e) { console.log("Erreur API Taux"); }
+        document.getElementById('dateUpdate').innerText = "Vérifié le " + new Date().toLocaleDateString('fr-FR');
+        calculerTout();
+        fermerSplash(); // On ferme le splash quand les données arrivent
+    }
+
+    function calculerTout() {
+        const m = parseFloat(document.getElementById('montant').value) || 0;
+        const dir = document.getElementById('direction').value;
+        const tRef = tauxBanques[0].taux;
+        let final = (dir === "CDF_USD") ? (m / tRef).toFixed(2) + " $" : Math.round(m * tRef).toLocaleString() + " FC";
+        document.getElementById('resultat-principal').innerText = final;
+        
         const tbody = document.getElementById('tableBanques');
-        const resPrincipal = document.getElementById('resultat-principal');
-        tbody.innerHTML = ""; 
-
-        if(!montant || montant <= 0) {
-            resPrincipal.innerText = "";
-            return;
-        }
-
-        const tauxRef = tauxBanques[0].taux;
-        let totalRef, uniteSource, uniteDest;
-
-        if (direction === "CDF_USD") {
-            totalRef = (montant / tauxRef).toFixed(2);
-            uniteSource = "CDF"; uniteDest = "USD";
-        } else {
-            totalRef = Math.round(montant * tauxRef).toLocaleString('fr-FR');
-            uniteSource = "USD"; uniteDest = "CDF";
-        }
-
-        resPrincipal.innerText = `${montant.toLocaleString('fr-FR')} ${uniteSource} ≈ ${totalRef} ${uniteDest}`;
-
-        tauxBanques.forEach(banque => {
-            let conversion;
-            if (direction === "CDF_USD") {
-                conversion = (montant / banque.taux).toFixed(2) + " $";
-            } else {
-                conversion = Math.round(montant * banque.taux).toLocaleString('fr-FR') + " FC";
-            }
-            tbody.innerHTML += `<tr><td>${banque.nom}</td><td class="taux-val">${banque.taux}</td><td>${conversion}</td></tr>`;
+        tbody.innerHTML = "";
+        tauxBanques.forEach(b => {
+            let conv = (dir === "CDF_USD") ? (m/b.taux).toFixed(2)+" $" : Math.round(m*b.taux).toLocaleString()+" FC";
+            tbody.innerHTML += `<tr><td>${b.nom}</td><td style="color:var(--primary);font-weight:bold;">${b.taux}</td><td>${conv}</td></tr>`;
         });
-
-        const urlSite = window.location.href;
-        const msg = `📊 *Finance RDC Pro*\nConversion : ${resPrincipal.innerText}\nConsultez le taux ici : ${urlSite}`;
-        document.getElementById('shareWA').href = `https://wa.me/?text=${encodeURIComponent(msg)}`;
-
+        document.getElementById('shareWA').href = `https://wa.me/?text=Finance RDC - Conversion: ${final}`;
         genererGraphique();
     }
 
+    // Fonctions Premium
+    function calculerCompta() {
+        const a = parseFloat(document.getElementById('achatUSD').value) || 0;
+        const v = parseFloat(document.getElementById('venteCDF').value) || 0;
+        const res = v - (a * tauxBanques[0].taux);
+        document.getElementById('resultMarge').innerText = "Bénéfice : " + Math.round(res).toLocaleString() + " FC";
+    }
+
+    function calculerStock() {
+        const q = parseFloat(document.getElementById('stockQty').value) || 0;
+        const p = parseFloat(document.getElementById('unitPrice').value) || 0;
+        document.getElementById('resultStock').innerText = "Total Stock : " + (q * p).toLocaleString() + " $";
+    }
+
+    function calculerInflation() {
+        const p = parseFloat(document.getElementById('prixActuel').value) || 0;
+        const f = parseFloat(document.getElementById('tauxFutur').value) || 0;
+        const tActuel = tauxBanques[0].taux;
+        if(tActuel > 0 && f > 0) {
+            const res = (p / tActuel) * f;
+            document.getElementById('resultInflation').innerText = "Nouveau prix : " + Math.round(res).toLocaleString() + " FC";
+        }
+    }
+
+    function calculerFrais() {
+        const m = parseFloat(document.getElementById('montantRetrait').value) || 0;
+        let frais = (m <= 10000) ? 800 : m * 0.03;
+        document.getElementById('resultFrais').innerText = "Frais : " + Math.round(frais).toLocaleString() + " FC";
+    }
+
+    let chart;
     function genererGraphique() {
         const ctx = document.getElementById('monGraphique').getContext('2d');
-        if (graphiqueInstance) graphiqueInstance.destroy();
-        graphiqueInstance = new Chart(ctx, {
+        if(chart) chart.destroy();
+        chart = new Chart(ctx, {
             type: 'bar',
-            data: {
-                labels: tauxBanques.map(b => b.nom),
-                datasets: [{
-                    label: 'Taux (CDF pour 1$)',
-                    data: tauxBanques.map(b => b.taux),
-                    backgroundColor: ['#dc3545', '#007bff', '#6c757d', '#fd7e14'],
-                    borderRadius: 5
-                }]
-            },
-            options: { 
-                responsive: true, 
-                scales: { y: { beginAtZero: false, min: 1500 } },
-                plugins: { legend: { display: false } }
-            }
-        });
-    }
-
-    function afficherDate() {
-        const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
-        document.getElementById('dateUpdate').innerText = "Dernière mise à jour : " + new Date().toLocaleDateString('fr-FR', options);
-    }
-
-    function recommander(note) {
-        let texte = note >= 4 ? "Génial ! Partagez l'app !" : "Merci pour votre note !";
-        document.getElementById('rating-text').innerText = texte;
-    }
-
-    window.onload = function() { 
-        calculer(); 
-        afficherDate(); 
-    };
-</script>
-
-</body>
-</html>
+            data: { 
+                labels

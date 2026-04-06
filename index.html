@@ -26,17 +26,19 @@
         .update-date { font-size: 0.8rem; color: #007bff; margin-bottom: 15px; font-weight: 500; }
         .section-tool { margin-top: 15px; padding: 15px; border-radius: 12px; border: 1px solid var(--border); text-align: left; }
         
-        /* Modal Premium Simplifié */
+        /* Modal Premium */
         .modal-payant { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; backdrop-filter: blur(5px); }
         .modal-content { background: var(--card); padding: 30px; border-radius: 30px; width: 90%; max-width: 380px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
         .modal-title { font-size: 1.8rem; font-weight: bold; color: var(--premium); margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .modal-desc { color: #666; font-size: 0.95rem; line-height: 1.4; margin-bottom: 20px; }
         
-        .btn-pay { background: var(--whatsapp); color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; font-weight: bold; font-size: 1.1rem; cursor: pointer; margin-bottom: 20px; transition: 0.3s; }
+        .btn-pay { background: var(--whatsapp); color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; font-weight: bold; font-size: 1.1rem; cursor: pointer; margin-bottom: 10px; transition: 0.3s; }
         .btn-pay:hover { filter: brightness(1.1); }
+        
+        .btn-share-bonus { background: var(--dark); color: white; border: none; padding: 12px; border-radius: 12px; width: 100%; font-weight: bold; cursor: pointer; margin-bottom: 20px; }
 
         .input-code { width: 100%; padding: 12px; border: 2px solid var(--premium); border-radius: 10px; text-align: center; font-size: 1rem; margin-bottom: 15px; outline: none; }
-        .btn-activate { background: var(--dark); color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; font-weight: bold; font-size: 1rem; cursor: pointer; }
+        .btn-activate { background: var(--primary); color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; font-weight: bold; font-size: 1rem; cursor: pointer; }
 
         #premiumFeatures { display: none; margin-top: 20px; border-top: 2px dashed var(--premium); padding-top: 10px; }
         .compta-tool { border-left: 5px solid var(--accent-compta); background: rgba(40, 167, 69, 0.03); margin-bottom: 10px; }
@@ -64,20 +66,21 @@
 
     <div id="autoSplash" class="modal-auto" onclick="fermerSplash()">
         <img src="icon-app.png" alt="Logo" class="logo-splash">
-        <p style="margin-top: 20px; font-weight: bold; color: #007bff; font-size: 1.1rem;">Chargement...</p>
+        <p style="margin-top: 20px; font-weight: bold; color: #007bff; font-size: 1.1rem;">Finance RDC Pro...</p>
     </div>
 
     <div id="premiumModal" class="modal-payant">
         <div class="modal-content">
             <div class="modal-title">💎 Zone Premium</div>
-            <p class="modal-desc">Débloquez les outils avancés immédiatement via Mobile Money.</p>
+            <p class="modal-desc">Accédez à vie aux outils de calcul de marge, stock et inflation.</p>
             
-            <button class="btn-pay" onclick="ouvrirPaiementDirect()">📲 Acheter par Mobile Money (1 $)</button>
+            <button class="btn-pay" onclick="ouvrirPaiementDirect()">📲 Acheter le Code (1 $)</button>
+            <button class="btn-share-bonus" onclick="partagerPourBonus()">📢 Partager pour un Bonus</button>
 
             <div class="activation-zone" style="border-top: 1px solid #eee; padding-top: 15px;">
-                <p style="font-size: 0.8rem; color: #666;">Déjà payé ? Entrez votre code :</p>
-                <input type="text" id="licenseCode" class="input-code" placeholder="UK-XXXX">
-                <button class="btn-activate" onclick="verifierCode()">Vérifier & Activer</button>
+                <p style="font-size: 0.8rem; color: #666;">Déjà payé ? Entrez le code de vérification :</p>
+                <input type="text" id="licenseCode" class="input-code" placeholder="XXXX">
+                <button class="btn-activate" onclick="verifierCode()">Activer maintenant</button>
             </div>
             <button class="btn-info" onclick="fermerModal()" style="border:none; margin-top:15px; color:#999;">Plus tard</button>
         </div>
@@ -88,17 +91,25 @@
             <span style="font-size:1.5rem;">🇨🇩</span>
             <h2 style="margin:10px 0;">Finance RDC Pro</h2>
         </div>
-        <div id="dateUpdate" class="update-date">Mise à jour en cours...</div>
+        <div id="dateUpdate" class="update-date">Chargement des taux...</div>
 
         <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 15px;">
             <button class="btn-info" onclick="toggleAbout()">ℹ️ À propos</button>
-            <button id="btnStatus" class="btn-info" style="border-color:var(--premium); color:#d4af37;" onclick="ouvrirModal()">💎 Premium</button>
+            <button id="btnStatus" class="btn-info" style="border-color:var(--premium); color:#d4af37;" onclick="ouvrirModal()">💎 Devenir Premium</button>
         </div>
 
         <div id="aboutSection">
-            <b>Finance RDC Pro</b> v2.6<br>
+            <b>Finance RDC Pro</b> v2.7<br>
             Développé par <b>Exaucé Kisiabongo (UK)</b>.<br>
-            Outils avancés pour commerçants et entrepreneurs en RDC.
+            Outils pro pour commerçants congolais.
+        </div>
+
+        <div class="section-tool" style="background: #e8f0fe; border-color: #d2e3fc;">
+            <h4 style="margin:0 0 10px 0; color: #1967d2;">📲 Installer l'application</h4>
+            <div style="font-size: 0.8rem;">
+                <b>Sur Android (Chrome) :</b> Cliquez sur ⋮ puis sur "Ajouter sur l'écran d'accueil'".<br>
+                <b>Sur iPhone (Safari) :</b> Cliquez sur Partager puis sur "Sur l'écran d'accueil".
+            </div>
         </div>
 
         <div class="section-tool">
@@ -108,13 +119,13 @@
             </select>
             <input type="number" id="montant" value="10000" oninput="calculerTout()">
             <div id="resultat-principal" style="font-size: 1.4rem; font-weight: bold; color: var(--primary); margin: 10px 0;"></div>
-            <a id="shareWA" class="btn-wa-share" href="#" target="_blank">Partager sur WhatsApp 📱</a>
+            <a id="shareWA" class="btn-wa-share" href="#" target="_blank">Partager ce calcul 📱</a>
         </div>
 
         <div id="premiumFeatures">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
-                <h3 style="color:var(--premium); font-size: 1rem; margin: 0;">🚀 Outils Business Pro</h3>
-                <button onclick="verrouillerPremium()" style="background:none; border:1px solid #ccc; border-radius:10px; font-size:0.7rem; cursor:pointer; padding: 2px 8px;">🔒 Verrouiller</button>
+                <h3 style="color:var(--premium); font-size: 1rem; margin: 0;">🚀 Outils Business Débloqués</h3>
+                <button onclick="verrouillerPremium()" style="background:none; border:1px solid #ccc; border-radius:10px; font-size:0.7rem; cursor:pointer; padding: 2px 8px;">🔒 Déconnexion</button>
             </div>
 
             <div class="section-tool compta-tool">
@@ -211,34 +222,40 @@
     }
     setTimeout(fermerSplash, 2800);
 
+    function activerPremiumUI(showAlert) {
+        document.getElementById('premiumFeatures').style.display = 'block';
+        document.getElementById('btnStatus').style.display = 'none';
+        localStorage.setItem('financeRDC_premium', 'true');
+        if(showAlert) alert("✅ Mode Premium activé avec succès !");
+    }
+
     function verifierCode() {
         const code = document.getElementById('licenseCode').value.trim().toUpperCase();
         if(code === MON_CODE_PRO) {
-            document.getElementById('premiumFeatures').style.display = 'block';
-            document.getElementById('btnStatus').style.display = 'none';
+            activerPremiumUI(true);
             fermerModal();
-            alert("✅ Zone Premium débloquée !");
         } else { alert("❌ Code incorrect."); }
     }
 
     function verrouillerPremium() {
-        document.getElementById('premiumFeatures').style.display = 'none';
-        document.getElementById('btnStatus').style.display = 'inline-block';
-        document.getElementById('licenseCode').value = "";
+        if(confirm("Désactiver le mode Premium sur cet appareil ?")) {
+            localStorage.removeItem('financeRDC_premium');
+            location.reload();
+        }
     }
 
     function ouvrirModal() { document.getElementById('premiumModal').style.display = 'flex'; }
     function fermerModal() { document.getElementById('premiumModal').style.display = 'none'; }
     
-    function toggleAbout() { 
-        const s = document.getElementById('aboutSection'); 
-        s.style.display = (s.style.display === 'block' ? 'none' : 'block'); 
-    }
-    
     function ouvrirPaiementDirect() { 
         const numero = "243842317817"; 
-        const message = "Bonjour Exaucé, je souhaite payer 1 $ par Mobile Money pour activer mon accès Premium Finance RDC Pro.";
+        const message = "Bonjour Exaucé, je souhaite acheter mon code Premium Finance RDC Pro (1 $).";
         window.open(`https://wa.me/${numero}?text=${encodeURIComponent(message)}`, '_blank');
+    }
+
+    function partagerPourBonus() {
+        const text = "Salut ! Utilise Finance RDC Pro pour suivre le taux du dollar et calculer tes bénéfices commerçants en RDC : " + window.location.href;
+        window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
     }
 
     async function chargerTauxReels() {
@@ -254,37 +271,26 @@
         } catch(e) {}
         document.getElementById('dateUpdate').innerText = "Vérifié le " + new Date().toLocaleDateString('fr-FR');
         calculerTout();
+        if(localStorage.getItem('financeRDC_premium') === 'true') {
+            activerPremiumUI(false);
+        }
     }
 
     function calculerTout() {
         const m = parseFloat(document.getElementById('montant').value) || 0;
         const dir = document.getElementById('direction').value;
         const tRef = tauxBanques[0].taux;
-        
-        let labelMontant = (dir === "CDF_USD") ? m.toLocaleString() + " FC" : m.toLocaleString() + " $";
         let final = (dir === "CDF_USD") ? (m / tRef).toFixed(2) + " $" : Math.round(m * tRef).toLocaleString() + " FC";
-        
         document.getElementById('resultat-principal').innerText = final;
-        
         const tbody = document.getElementById('tableBanques');
         tbody.innerHTML = "";
         tauxBanques.forEach(b => {
             let conv = (dir === "CDF_USD") ? (m/b.taux).toFixed(2)+" $" : Math.round(m*b.taux).toLocaleString()+" FC";
             tbody.innerHTML += `<tr><td>${b.nom}</td><td style="color:var(--primary);font-weight:bold;">${b.taux}</td><td>${conv}</td></tr>`;
         });
-
-        // --- PARTIE PARTAGE MISE À JOUR ---
-        // On récupère le lien actuel (GitHub ou autre)
-        const appLink = window.location.href;
-        const textShare = `Finance RDC Pro 🇨🇩\nConversion : ${labelMontant} ➔ ${final}\n\nUtilisez l'application ici : ${appLink}`;
-        
-        document.getElementById('shareWA').href = `https://wa.me/?text=${encodeURIComponent(textShare)}`;
-        // ----------------------------------
-        
         genererGraphique();
     }
 
-    // Fonctions Premium
     function calculerCompta() {
         const a = parseFloat(document.getElementById('achatUSD').value) || 0;
         const v = parseFloat(document.getElementById('venteCDF').value) || 0;
@@ -335,8 +341,12 @@
         });
     }
 
+    function toggleAbout() { 
+        const s = document.getElementById('aboutSection'); 
+        s.style.display = (s.style.display === 'block' ? 'none' : 'block'); 
+    }
+
     window.onload = chargerTauxReels;
 </script>
 </body>
-    </html>
-    
+</html>

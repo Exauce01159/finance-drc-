@@ -18,20 +18,22 @@
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
         .container { background: var(--card); padding: 20px; border-radius: 15px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); width: 100%; max-width: 500px; box-sizing: border-box; text-align: center; }
         
-        /* Splash Screen - Ajout du curseur pointer pour indiquer qu'on peut cliquer pour fermer */
-        .modal-auto { display: flex; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: #ffffff; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.6s ease, visibility 0.6s; cursor: pointer; }
+        /* Splash Screen */
+        .modal-auto { display: flex; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: #ffffff; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.6s ease, visibility 0.6s; }
         .logo-splash { width: 130px; height: 130px; border-radius: 28px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); animation: app-bounce 1.8s infinite ease-in-out; }
         @keyframes app-bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
 
         .update-date { font-size: 0.8rem; color: #007bff; margin-bottom: 15px; font-weight: 500; }
         .section-tool { margin-top: 15px; padding: 15px; border-radius: 12px; border: 1px solid var(--border); text-align: left; }
         
-        /* Modaux */
+        /* Modal Premium Simplifié */
         .modal-payant { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; backdrop-filter: blur(5px); }
         .modal-content { background: var(--card); padding: 30px; border-radius: 30px; width: 90%; max-width: 380px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
-        .modal-title { font-size: 1.6rem; font-weight: bold; color: var(--dark); margin-bottom: 10px; }
+        .modal-title { font-size: 1.8rem; font-weight: bold; color: var(--premium); margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .modal-desc { color: #666; font-size: 0.95rem; line-height: 1.4; margin-bottom: 20px; }
         
         .btn-pay { background: var(--whatsapp); color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; font-weight: bold; font-size: 1.1rem; cursor: pointer; margin-bottom: 20px; transition: 0.3s; }
+        .btn-pay:hover { filter: brightness(1.1); }
 
         .input-code { width: 100%; padding: 12px; border: 2px solid var(--premium); border-radius: 10px; text-align: center; font-size: 1rem; margin-bottom: 15px; outline: none; }
         .btn-activate { background: var(--dark); color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; font-weight: bold; font-size: 1rem; cursor: pointer; }
@@ -56,9 +58,6 @@
         .comment-item { background: #f0f2f5; padding: 12px 15px; border-radius: 18px; margin-bottom: 12px; font-size: 0.9rem; position: relative; border-bottom-left-radius: 2px; max-width: 90%; }
         .comment-item b { color: var(--primary); display: block; font-size: 0.8rem; margin-bottom: 4px; text-transform: capitalize; }
         #listeDisplay { max-height: 250px; overflow-y: auto; margin: 15px 0; padding-right: 5px; display: flex; flex-direction: column; }
-        
-        /* Aide Installation Styles */
-        .help-box { text-align: left; background: #f9f9f9; padding: 12px; border-radius: 10px; margin-bottom: 10px; font-size: 0.85rem; border-left: 4px solid var(--primary); }
     </style>
 </head>
 <body>
@@ -68,28 +67,15 @@
         <p style="margin-top: 20px; font-weight: bold; color: #007bff; font-size: 1.1rem;">Chargement...</p>
     </div>
 
-    <div id="helpModal" class="modal-payant">
-        <div class="modal-content">
-            <div class="modal-title">📲 Installer l'App</div>
-            <div class="help-box">
-                <b>Android (Chrome) :</b><br>
-                Appuyez sur les 3 points ⋮ puis sur <b>"Installer l'application"</b>.
-            </div>
-            <div class="help-box">
-                <b>iPhone (Safari) :</b><br>
-                Appuyez sur "Partager" ⬆️ puis sur <b>"Sur l'écran d'accueil"</b> ➕.
-            </div>
-            <button id="pwaBtn" class="btn-main" style="display:none; background:var(--whatsapp);">Installer Maintenant</button>
-            <button class="btn-info" onclick="fermerHelp()" style="border:none; margin-top:10px; color:#999;">Fermer</button>
-        </div>
-    </div>
-
     <div id="premiumModal" class="modal-payant">
         <div class="modal-content">
-            <div class="modal-title" style="color:var(--premium)">💎 Zone Premium</div>
+            <div class="modal-title">💎 Zone Premium</div>
             <p class="modal-desc">Débloquez les outils avancés immédiatement via Mobile Money.</p>
+            
             <button class="btn-pay" onclick="ouvrirPaiementDirect()">📲 Acheter par Mobile Money (1 $)</button>
+
             <div class="activation-zone" style="border-top: 1px solid #eee; padding-top: 15px;">
+                <p style="font-size: 0.8rem; color: #666;">Déjà payé ? Entrez votre code :</p>
                 <input type="text" id="licenseCode" class="input-code" placeholder="UK-XXXX">
                 <button class="btn-activate" onclick="verifierCode()">Vérifier & Activer</button>
             </div>
@@ -104,14 +90,13 @@
         </div>
         <div id="dateUpdate" class="update-date">Mise à jour en cours...</div>
 
-        <div style="display: flex; gap: 8px; justify-content: center; margin-bottom: 15px; flex-wrap: wrap;">
-            <button class="btn-info" onclick="toggleAbout()">ℹ️ Infos</button>
-            <button class="btn-info" onclick="ouvrirHelp()" style="border-color:#333; color:#333;">❓ Aide</button>
+        <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 15px;">
+            <button class="btn-info" onclick="toggleAbout()">ℹ️ À propos</button>
             <button id="btnStatus" class="btn-info" style="border-color:var(--premium); color:#d4af37;" onclick="ouvrirModal()">💎 Premium</button>
         </div>
 
         <div id="aboutSection">
-            <b>Finance RDC Pro</b> v2.7<br>
+            <b>Finance RDC Pro</b> v2.6<br>
             Développé par <b>Exaucé Kisiabongo (UK)</b>.<br>
             Outils avancés pour commerçants et entrepreneurs en RDC.
         </div>
@@ -219,37 +204,13 @@
         { nom: "Ecobank", taux: 2845 }
     ];
 
-    // --- GESTION SPLASH SCREEN (SÉCURISÉE) ---
     function fermerSplash() {
         const splash = document.getElementById('autoSplash');
-        if(splash) {
-            splash.style.opacity = '0';
-            setTimeout(() => { splash.style.display = 'none'; }, 600);
-        }
+        splash.style.opacity = '0';
+        setTimeout(() => { splash.style.display = 'none'; }, 600);
     }
-    // Fermeture automatique après 3 secondes même si bug
-    setTimeout(fermerSplash, 3000);
+    setTimeout(fermerSplash, 2800);
 
-    // --- GESTION INSTALLATION (PWA) ---
-    let instPrompt;
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        instPrompt = e;
-        document.getElementById('pwaBtn').style.display = 'block';
-    });
-
-    document.getElementById('pwaBtn').addEventListener('click', async () => {
-        if (instPrompt) {
-            instPrompt.prompt();
-            instPrompt = null;
-            fermerHelp();
-        }
-    });
-
-    function ouvrirHelp() { document.getElementById('helpModal').style.display = 'flex'; }
-    function fermerHelp() { document.getElementById('helpModal').style.display = 'none'; }
-
-    // --- LOGIQUE PREMIUM ---
     function verifierCode() {
         const code = document.getElementById('licenseCode').value.trim().toUpperCase();
         if(code === MON_CODE_PRO) {
@@ -263,6 +224,7 @@
     function verrouillerPremium() {
         document.getElementById('premiumFeatures').style.display = 'none';
         document.getElementById('btnStatus').style.display = 'inline-block';
+        document.getElementById('licenseCode').value = "";
     }
 
     function ouvrirModal() { document.getElementById('premiumModal').style.display = 'flex'; }
@@ -274,11 +236,11 @@
     }
     
     function ouvrirPaiementDirect() { 
-        const message = "Bonjour Exaucé, je souhaite payer 1 $ pour l'accès Premium Finance RDC Pro.";
-        window.open(`https://wa.me/243842317817?text=${encodeURIComponent(message)}`, '_blank');
+        const numero = "243842317817"; 
+        const message = "Bonjour Exaucé, je souhaite payer 1 $ par Mobile Money pour activer mon accès Premium Finance RDC Pro.";
+        window.open(`https://wa.me/${numero}?text=${encodeURIComponent(message)}`, '_blank');
     }
 
-    // --- CALCULS & TAUX ---
     async function chargerTauxReels() {
         try {
             const res = await fetch('https://open.er-api.com/v6/latest/USD');
@@ -289,10 +251,9 @@
             tauxBanques[2].taux = tauxRef - 10;
             tauxBanques[3].taux = tauxRef - 25;
             tauxBanques[4].taux = tauxRef - 5;
-        } catch(e) { console.log("Erreur API Taux"); }
+        } catch(e) {}
         document.getElementById('dateUpdate').innerText = "Vérifié le " + new Date().toLocaleDateString('fr-FR');
         calculerTout();
-        fermerSplash(); // On ferme le splash quand les données arrivent
     }
 
     function calculerTout() {
@@ -349,4 +310,21 @@
         chart = new Chart(ctx, {
             type: 'bar',
             data: { 
-                labels
+                labels: tauxBanques.map(b => b.nom), 
+                datasets: [{ 
+                    label: 'Taux (FC)', 
+                    data: tauxBanques.map(b => b.taux), 
+                    backgroundColor: ['#007bff', '#2ecc71', '#f1c40f', '#e74c3c', '#9b59b6'] 
+                }] 
+            },
+            options: { 
+                scales: { y: { min: Math.min(...tauxBanques.map(b=>b.taux)) - 50 } }, 
+                plugins: { legend: { display: false } } 
+            }
+        });
+    }
+
+    window.onload = chargerTauxReels;
+</script>
+</body>
+</html>

@@ -260,7 +260,10 @@
         const m = parseFloat(document.getElementById('montant').value) || 0;
         const dir = document.getElementById('direction').value;
         const tRef = tauxBanques[0].taux;
+        
+        let labelMontant = (dir === "CDF_USD") ? m.toLocaleString() + " FC" : m.toLocaleString() + " $";
         let final = (dir === "CDF_USD") ? (m / tRef).toFixed(2) + " $" : Math.round(m * tRef).toLocaleString() + " FC";
+        
         document.getElementById('resultat-principal').innerText = final;
         
         const tbody = document.getElementById('tableBanques');
@@ -269,7 +272,15 @@
             let conv = (dir === "CDF_USD") ? (m/b.taux).toFixed(2)+" $" : Math.round(m*b.taux).toLocaleString()+" FC";
             tbody.innerHTML += `<tr><td>${b.nom}</td><td style="color:var(--primary);font-weight:bold;">${b.taux}</td><td>${conv}</td></tr>`;
         });
-        document.getElementById('shareWA').href = `https://wa.me/?text=Finance RDC - Conversion: ${final}`;
+
+        // --- PARTIE PARTAGE MISE À JOUR ---
+        // On récupère le lien actuel (GitHub ou autre)
+        const appLink = window.location.href;
+        const textShare = `Finance RDC Pro 🇨🇩\nConversion : ${labelMontant} ➔ ${final}\n\nUtilisez l'application ici : ${appLink}`;
+        
+        document.getElementById('shareWA').href = `https://wa.me/?text=${encodeURIComponent(textShare)}`;
+        // ----------------------------------
+        
         genererGraphique();
     }
 
@@ -327,4 +338,5 @@
     window.onload = chargerTauxReels;
 </script>
 </body>
-</html>
+    </html>
+    

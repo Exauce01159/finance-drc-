@@ -1,352 +1,401 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-bs-theme="light">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finance RDC Pro</title>
-    
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#ffffff">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        :root {
-            --bg: #f0f2f5; --card: #ffffff; --text: #1c1e21;
-            --primary: #007bff; --whatsapp: #2ecc71; --border: #dee2e6;
-            --accent-compta: #28a745; --premium: #f1c40f; --dark: #333333;
-            --inflation: #e74c3c; --money: #9b59b6;
-        }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
-        .container { background: var(--card); padding: 20px; border-radius: 15px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); width: 100%; max-width: 500px; box-sizing: border-box; text-align: center; }
-        
-        /* Splash Screen */
-        .modal-auto { display: flex; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: #ffffff; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.6s ease, visibility 0.6s; }
-        .logo-splash { width: 130px; height: 130px; border-radius: 28px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); animation: app-bounce 1.8s infinite ease-in-out; }
-        @keyframes app-bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-        .update-date { font-size: 0.8rem; color: #007bff; margin-bottom: 15px; font-weight: 500; }
-        .section-tool { margin-top: 15px; padding: 15px; border-radius: 12px; border: 1px solid var(--border); text-align: left; }
-        
-        /* Modal Premium */
-        .modal-payant { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; backdrop-filter: blur(5px); }
-        .modal-content { background: var(--card); padding: 30px; border-radius: 30px; width: 90%; max-width: 380px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
-        .modal-title { font-size: 1.8rem; font-weight: bold; color: var(--premium); margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .modal-desc { color: #666; font-size: 0.95rem; line-height: 1.4; margin-bottom: 20px; }
-        
-        .btn-pay { background: var(--whatsapp); color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; font-weight: bold; font-size: 1.1rem; cursor: pointer; margin-bottom: 10px; transition: 0.3s; }
-        .btn-pay:hover { filter: brightness(1.1); }
-        
-        .btn-share-bonus { background: var(--dark); color: white; border: none; padding: 12px; border-radius: 12px; width: 100%; font-weight: bold; cursor: pointer; margin-bottom: 20px; }
+  <!-- ── SEO & Description ──────────────────────────────── -->
+  <title>Finance RDC Pro — Taux & Change CDF/USD</title>
+  <meta name="description"
+    content="Suivez le taux du dollar en temps réel, convertissez CDF ↔ USD et gérez vos bénéfices comme un pro. Application gratuite pour commerçants congolais.">
+  <meta name="keywords"
+    content="taux dollar Congo, CDF USD, convertisseur franc congolais, finance RDC, dollar kinshasa">
+  <meta name="author" content="Exaucé Kisiabongo">
+  <meta name="robots" content="index, follow">
 
-        .input-code { width: 100%; padding: 12px; border: 2px solid var(--premium); border-radius: 10px; text-align: center; font-size: 1rem; margin-bottom: 15px; outline: none; }
-        .btn-activate { background: var(--primary); color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; font-weight: bold; font-size: 1rem; cursor: pointer; }
+  <!-- ── Open Graph (partage WhatsApp / réseaux sociaux) ── -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Finance RDC Pro — Taux & Change">
+  <meta property="og:description"
+    content="Taux du dollar en temps réel, conversion CDF/USD et outils business pour commerçants congolais.">
+  <meta property="og:image" content="icon-app.png">
+  <meta property="og:locale" content="fr_CD">
 
-        #premiumFeatures { display: none; margin-top: 20px; border-top: 2px dashed var(--premium); padding-top: 10px; }
-        .compta-tool { border-left: 5px solid var(--accent-compta); background: rgba(40, 167, 69, 0.03); margin-bottom: 10px; }
-        .stock-tool { border-left: 5px solid var(--premium); background: rgba(255, 215, 0, 0.03); margin-bottom: 10px;}
-        .inflation-tool { border-left: 5px solid var(--inflation); background: rgba(231, 76, 60, 0.03); margin-bottom: 10px;}
-        .money-tool { border-left: 5px solid var(--money); background: rgba(155, 89, 182, 0.03); }
+  <!-- ── PWA ────────────────────────────────────────────── -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#1d4ed8" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Finance RDC">
+  <link rel="apple-touch-icon" href="icon-app.png">
 
-        .btn-info { background: none; color: var(--primary); border: 1px solid var(--primary); padding: 6px 18px; font-size: 0.8rem; border-radius: 20px; cursor: pointer; }
-        .btn-main { width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: none; background: var(--primary); color: white; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        .btn-wa-share { background: var(--whatsapp); color: white; text-decoration: none; display: flex; align-items: center; justify-content: center; padding: 12px; border-radius: 10px; font-weight: bold; margin-bottom: 15px; }
+  <!-- ── Performance : préconnexions ────────────────────── -->
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preconnect" href="https://open.er-api.com">
+  <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+  <link rel="dns-prefetch" href="https://firestore.googleapis.com">
 
-        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid var(--border); box-sizing: border-box; font-family: inherit; font-size: 0.95rem; }
-        table { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-top: 15px; }
-        th, td { padding: 8px; border-bottom: 1px solid var(--border); text-align: left; }
-        
-        #aboutSection { display: none; font-size: 0.75rem; margin: 10px 0; padding: 10px; background: #f8f9fa; border-radius: 10px; text-align: left; line-height: 1.4; }
+  <!-- ── Styles ─────────────────────────────────────────── -->
+  <link rel="preload" href="style.css" as="style">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 
-        .comment-container { text-align: left; margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px; width: 100%; }
-        .comment-item { background: #f0f2f5; padding: 12px 15px; border-radius: 18px; margin-bottom: 12px; font-size: 0.9rem; position: relative; border-bottom-left-radius: 2px; max-width: 90%; }
-        .comment-item b { color: var(--primary); display: block; font-size: 0.8rem; margin-bottom: 4px; text-transform: capitalize; }
-        #listeDisplay { max-height: 250px; overflow-y: auto; margin: 15px 0; padding-right: 5px; display: flex; flex-direction: column; }
-    </style>
+  <!-- ── Chart.js ───────────────────────────────────────── -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+
+  <!-- ── Thème initial (évite le flash blanc/noir) ───────── -->
+  <script>
+    (function () {
+      const t = localStorage.getItem('financeRDC_theme');
+      if (t) document.documentElement.setAttribute('data-bs-theme', t);
+      else if (window.matchMedia('(prefers-color-scheme: dark)').matches)
+        document.documentElement.setAttribute('data-bs-theme', 'dark');
+    })();
+  </script>
 </head>
+
 <body>
 
-    <div id="autoSplash" class="modal-auto" onclick="fermerSplash()">
-        <img src="icon-app.png" alt="Logo" class="logo-splash">
-        <p style="margin-top: 20px; font-weight: bold; color: #007bff; font-size: 1.1rem;">Finance RDC Pro...</p>
+  <!-- ── Splash Screen ──────────────────────────────────── -->
+  <div id="autoSplash" class="modal-auto" onclick="fermerSplash()" role="status" aria-label="Chargement">
+    <img src="icon-app.png" alt="Logo Finance RDC Pro" class="logo-splash">
+    <p class="mt-4 fw-bold fs-5" style="color: #1d4ed8;">Finance RDC Pro…</p>
+    <p class="small text-muted">Taux & Change</p>
+  </div>
+
+  <!-- ── Modal Premium ──────────────────────────────────── -->
+  <div class="modal fade" id="premiumBootstrapModal" tabindex="-1" aria-labelledby="premiumModalLabel" aria-modal="true"
+    role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content p-3 border-0" style="border-radius: 24px;">
+
+        <div class="modal-header border-0 text-center d-block position-relative pb-0">
+          <span class="premium-badge mb-2">ACCÈS À VIE</span>
+          <h4 class="modal-title fw-bold" id="premiumModalLabel" style="color: #d97706;">💎 Zone Premium</h4>
+          <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal"
+            aria-label="Fermer"></button>
+        </div>
+
+        <div class="modal-body text-center pt-2">
+          <p class="text-muted small mb-4">
+            Débloquez les outils de calcul de <strong>marge</strong>, de <strong>stock</strong>,
+            de <strong>prévision d'inflation</strong> et de <strong>frais Mobile Money</strong>.
+          </p>
+
+          <button class="btn btn-whatsapp w-100 py-3 mb-2 fw-bold" onclick="ouvrirPaiementDirect()"
+            aria-label="Acheter le code premium via WhatsApp">
+            📲 Acheter le Code — 1 $
+          </button>
+          <button class="btn btn-outline-secondary w-100 py-2 mb-4" onclick="partagerPourBonus()"
+            aria-label="Partager l'application pour obtenir un bonus">
+            📢 Partager pour un Bonus
+          </button>
+          //CODE:UK-2026
+          <div class="pt-3 border-top">
+            <p class="small text-muted mb-2">Déjà payé ? Entrez votre code :</p>
+
+            <input type="password" id="licenseCode" autocomplete="off"
+              class="form-control form-control-lg text-center fw-bold mb-1" placeholder="••••" maxlength="10"
+              style="letter-spacing: 6px; border-color: #d97706;" aria-label="Code de licence Premium">
+
+            <div id="licenseError" class="text-danger small mb-2" role="alert" aria-live="polite"></div>
+            <button class="btn btn-premium w-100 py-2 fw-bold" onclick="verifierCode()">
+              ✅ Activer maintenant
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════
+       CONTENU PRINCIPAL
+  ══════════════════════════════════════════════════════ -->
+  <main class="main-container shadow" role="main">
+
+    <!-- En-tête -->
+    <header class="d-flex align-items-center justify-content-between mb-3">
+      <div class="d-flex align-items-center gap-2">
+        <a href="index.html" aria-label="Accueil Finance RDC Pro">
+          <img src="icon-app.png" alt="Logo" class="header-logo">
+        </a>
+        <span aria-hidden="true">🇨🇩</span>
+        <div>
+          <h1 class="m-0 fw-bold" style="font-size: 1.1rem; line-height: 1.1;">Finance RDC Pro</h1>
+          <p class="m-0 text-muted" style="font-size: 0.72rem;">Taux & Change</p>
+        </div>
+      </div>
+      <button id="themeToggle" class="btn btn-sm btn-outline-secondary style-toggle-btn" onclick="toggleTheme()"
+        aria-label="Basculer le mode sombre/clair" title="Changer de thème">
+        🌓
+      </button>
+    </header>
+
+    <!-- Date / statut taux -->
+    <div class="text-center mb-3">
+      <span id="dateUpdate" role="status" aria-live="polite">Chargement des taux…</span>
     </div>
 
-    <div id="premiumModal" class="modal-payant">
-        <div class="modal-content">
-            <div class="modal-title">💎 Zone Premium</div>
-            <p class="modal-desc">Accédez à vie aux outils de calcul de marge, stock et inflation.</p>
-            
-            <button class="btn-pay" onclick="ouvrirPaiementDirect()">📲 Acheter le Code (1 $)</button>
-            <button class="btn-share-bonus" onclick="partagerPourBonus()">📢 Partager pour un Bonus</button>
-
-            <div class="activation-zone" style="border-top: 1px solid #eee; padding-top: 15px;">
-                <p style="font-size: 0.8rem; color: #666;">Déjà payé ? Entrez le code de vérification :</p>
-                <input type="text" id="licenseCode" class="input-code" placeholder="XXXX">
-                <button class="btn-activate" onclick="verifierCode()">Activer maintenant</button>
-            </div>
-            <button class="btn-info" onclick="fermerModal()" style="border:none; margin-top:15px; color:#999;">Plus tard</button>
-        </div>
+    <!-- Actions secondaires -->
+    <div class="d-flex gap-2 justify-content-center mb-3 flex-wrap">
+      <button class="btn btn-sm btn-outline-secondary rounded-pill px-3" onclick="toggleAbout()" aria-expanded="false"
+        aria-controls="aboutSection">
+        ℹ️ À propos
+      </button>
+      <button id="btnStatus" class="btn btn-sm btn-premium rounded-pill px-3 fw-bold" onclick="ouvrirModal()"
+        aria-label="Devenir membre Premium">
+        💎 Devenir Premium
+      </button>
     </div>
 
-    <div class="container">
-        <div style="display:flex; align-items:center; justify-content:center; gap:10px;">
-            <span style="font-size:1.5rem;">🇨🇩</span>
-            <h2 style="margin:10px 0;">Finance RDC Pro</h2>
-        </div>
-        <div id="dateUpdate" class="update-date">Chargement des taux...</div>
+    <!-- Section À propos -->
+    <section id="aboutSection" class="alert border small text-start p-3 mb-3 shadow-sm"
+      style="display:none; border-radius:14px;" aria-label="À propos de l'application">
+      <strong>Finance RDC Pro</strong> v2.7<br>
+      Développé par <strong>Exaucé Kisiabongo (UK)</strong>.<br>
+      Outils professionnels pour commerçants congolais.<br>
+      <span class="text-muted" style="font-size: 0.78rem;">
+        Taux fournis par Open Exchange Rates API.
+      </span>
+    </section>
 
-        <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 15px;">
-            <button class="btn-info" onclick="toggleAbout()">ℹ️ À propos</button>
-            <button id="btnStatus" class="btn-info" style="border-color:var(--premium); color:#d4af37;" onclick="ouvrirModal()">💎 Devenir Premium</button>
-        </div>
-
-        <div id="aboutSection">
-            <b>Finance RDC Pro</b> v2.7<br>
-            Développé par <b>Exaucé Kisiabongo (UK)</b>.<br>
-            Outils pro pour commerçants congolais.
-        </div>
-
-        <div class="section-tool" style="background: #e8f0fe; border-color: #d2e3fc;">
-            <h4 style="margin:0 0 10px 0; color: #1967d2;">📲 Installer l'application</h4>
-            <div style="font-size: 0.8rem;">
-                <b>Sur Android (Chrome) :</b> Cliquez sur ⋮ puis sur "Ajouter sur l'écran d'accueil'".<br>
-                <b>Sur iPhone (Safari) :</b> Cliquez sur Partager puis sur "Sur l'écran d'accueil".
-            </div>
-        </div>
-
-        <div class="section-tool">
-            <select id="direction" onchange="calculerTout()">
-                <option value="CDF_USD">Franc (CDF) ➔ Dollar (USD)</option>
-                <option value="USD_CDF">Dollar (USD) ➔ Franc (CDF)</option>
-            </select>
-            <input type="number" id="montant" value="10000" oninput="calculerTout()">
-            <div id="resultat-principal" style="font-size: 1.4rem; font-weight: bold; color: var(--primary); margin: 10px 0;"></div>
-            <a id="shareWA" class="btn-wa-share" href="#" target="_blank">Partager ce calcul 📱</a>
-        </div>
-
-        <div id="premiumFeatures">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
-                <h3 style="color:var(--premium); font-size: 1rem; margin: 0;">🚀 Outils Business Débloqués</h3>
-                <button onclick="verrouillerPremium()" style="background:none; border:1px solid #ccc; border-radius:10px; font-size:0.7rem; cursor:pointer; padding: 2px 8px;">🔒 Déconnexion</button>
-            </div>
-
-            <div class="section-tool compta-tool">
-                <h4 style="margin:0 0 10px 0; color:var(--accent-compta)">📊 Marge & Bénéfice</h4>
-                <input type="number" id="achatUSD" placeholder="Prix d'achat ($)" oninput="calculerCompta()">
-                <input type="number" id="venteCDF" placeholder="Prix de vente (FC)" oninput="calculerCompta()">
-                <div id="resultMarge" style="font-weight:bold; color:var(--accent-compta);">Bénéfice : 0 FC</div>
-            </div>
-
-            <div class="section-tool inflation-tool">
-                <h4 style="margin:0 0 10px 0; color:var(--inflation)">📉 Alerte Inflation</h4>
-                <input type="number" id="prixActuel" placeholder="Prix actuel (FC)" oninput="calculerInflation()">
-                <input type="number" id="tauxFutur" placeholder="Taux futur prévu" oninput="calculerInflation()">
-                <div id="resultInflation" style="font-weight:bold; color:var(--inflation);">Nouveau prix : 0 FC</div>
-            </div>
-
-            <div class="section-tool stock-tool">
-                <h4 style="margin:0 0 10px 0; color:#856404">📦 Valeur du Stock</h4>
-                <input type="number" id="stockQty" placeholder="Quantité" oninput="calculerStock()">
-                <input type="number" id="unitPrice" placeholder="Prix unitaire ($)" oninput="calculerStock()">
-                <div id="resultStock" style="font-weight:bold;">Total Stock : 0 $</div>
-            </div>
-
-            <div class="section-tool money-tool">
-                <h4 style="margin:0 0 10px 0; color:var(--money)">💸 Frais de Retrait</h4>
-                <input type="number" id="montantRetrait" placeholder="Montant (FC)" oninput="calculerFrais()">
-                <div id="resultFrais" style="font-weight:bold; color:var(--money);">Frais : 0 FC</div>
-            </div>
-        </div>
-
-        <div style="overflow-x:auto;">
-            <table>
-                <thead><tr><th>Banques de RDC</th><th>Taux (1$)</th><th>Conversion</th></tr></thead>
-                <tbody id="tableBanques"></tbody>
-            </table>
-        </div>
-
-        <canvas id="monGraphique" style="margin-top:20px; max-height: 200px;"></canvas>
-
-        <div class="comment-container">
-            <h3 style="margin:0; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">💬 Avis des utilisateurs</h3>
-            <div id="listeDisplay"></div>
-            
-            <div style="background: #f8f9fa; padding: 15px; border-radius: 12px; border: 1px solid #eee;">
-                <input type="text" id="userName" placeholder="Votre nom">
-                <textarea id="userComment" placeholder="Votre message..." rows="3"></textarea>
-                <button class="btn-main" id="btnFirebase">Publier mon avis</button>
-            </div>
-        </div>
+    <!-- Bannière installation PWA -->
+    <div class="install-banner mb-3" role="note" aria-label="Instructions d'installation">
+      <h6 class="fw-bold mb-1" style="color: #1d4ed8; font-size: 0.85rem;">📲 Installer l'application</h6>
+      <div class="text-muted" style="font-size: 0.78rem; line-height: 1.5;">
+        <strong>Android (Chrome) :</strong> ⋮ → « Ajouter à l'écran d'accueil »<br>
+        <strong>iPhone (Safari) :</strong> Partager ⬆️ → « Sur l'écran d'accueil »
+      </div>
     </div>
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-    
-    const firebaseConfig = { apiKey: "AIzaSyDr7swsZsXBJ72x7FpMXHA6YMN-76H43ZI", authDomain: "mon-site-chat.firebaseapp.com", projectId: "mon-site-chat", storageBucket: "mon-site-chat.firebasestorage.app", messagingSenderId: "408362473343", appId: "1:408362473343:web:afa7ad876b271e4bf5ec4a" };
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const colRef = collection(db, "commentaires");
+    <!-- ── Convertisseur principal ──────────────────────── -->
+    <section class="card-custom shadow-sm" aria-labelledby="converterTitle">
+      <h2 id="converterTitle" class="visually-hidden">Convertisseur de devises</h2>
 
-    document.getElementById('btnFirebase').onclick = async () => {
-        const nom = document.getElementById('userName').value || "Anonyme";
-        const com = document.getElementById('userComment').value;
-        if(com.trim()) { 
-            await addDoc(colRef, { nom, message: com, date: serverTimestamp() }); 
-            document.getElementById('userComment').value = ""; 
-        }
-    };
+      <select id="direction" class="form-select mb-2" onchange="calculerTout()" aria-label="Sens de conversion">
+        <option value="CDF_USD">Franc Congolais (CDF) ➔ Dollar (USD)</option>
+        <option value="USD_CDF">Dollar (USD) ➔ Franc Congolais (CDF)</option>
+      </select>
 
-    onSnapshot(query(colRef, orderBy("date", "desc")), (snap) => {
-        const display = document.getElementById('listeDisplay');
-        display.innerHTML = "";
-        snap.docs.forEach(doc => { 
-            const d = doc.data(); 
-            display.innerHTML += `<div class="comment-item"><b>${d.nom}</b><span>${d.message}</span></div>`; 
-        });
-    });
-</script>
+      <input type="number" inputmode="decimal" id="montant"
+        class="form-control form-control-lg fw-bold mb-2 text-center" value="10000" oninput="calculerTout()"
+        aria-label="Montant à convertir" placeholder="Montant">
 
-<script>
-    const MON_CODE_PRO = "UK-2026"; 
-    let tauxBanques = [
-        { nom: "Marché Central", taux: 2850 },
-        { nom: "Rawbank", taux: 2835 },
-        { nom: "Equity BCDC", taux: 2840 },
-        { nom: "TMB", taux: 2825 },
-        { nom: "Ecobank", taux: 2845 }
-    ];
+      <div id="resultat-principal" class="text-center my-2" role="status" aria-live="polite"
+        aria-label="Résultat de la conversion">0.00 $</div>
 
-    function fermerSplash() {
-        const splash = document.getElementById('autoSplash');
-        splash.style.opacity = '0';
-        setTimeout(() => { splash.style.display = 'none'; }, 600);
+      <a id="shareWA" class="btn btn-whatsapp w-100 py-2 mt-1 text-decoration-none text-center" href="#" target="_blank"
+        rel="noopener noreferrer" aria-label="Partager ce calcul sur WhatsApp">
+        Partager ce calcul 📱
+      </a>
+
+      <!-- Rendu mixte -->
+      <div class="mt-4 pt-3 border-top">
+        <h3 class="fw-bold mb-3 text-start" style="font-size: 0.95rem;">🧮 Calculateur de Rendu Mixte</h3>
+
+        <label class="form-label small text-muted d-block text-start mb-1" for="mixtePrixArticle">
+          Prix de l'article ($)
+        </label>
+        <input type="number" inputmode="decimal" id="mixtePrixArticle" class="form-control form-control-sm mb-2"
+          placeholder="0.00" oninput="calculerRenduMixte()" aria-label="Prix de l'article en dollars">
+
+        <div class="row g-2 mb-2">
+          <div class="col-6">
+            <label class="form-label small text-muted d-block text-start mb-1" for="mixteDonneUSD">
+              Donné en Dollar ($)
+            </label>
+            <input type="number" inputmode="decimal" id="mixteDonneUSD" class="form-control form-control-sm"
+              placeholder="0.00" oninput="calculerRenduMixte()" aria-label="Montant donné en dollars">
+          </div>
+          <div class="col-6">
+            <label class="form-label small text-muted d-block text-start mb-1" for="mixteDonneCDF">
+              Donné en Franc (FC)
+            </label>
+            <input type="number" inputmode="decimal" id="mixteDonneCDF" class="form-control form-control-sm"
+              placeholder="0" oninput="calculerRenduMixte()" aria-label="Montant donné en francs">
+          </div>
+        </div>
+
+        <div id="mixteStatutCard" class="p-3 bg-light rounded-3 text-start mt-2 border" role="status"
+          aria-live="polite">
+          <div id="mixteResultatLabel" class="small text-muted mb-1">Reste à rendre :</div>
+          <div id="mixteResultatFC" class="fw-bold text-success fs-5">0 FC</div>
+          <div id="mixteResultatUSD" class="text-secondary small">ou 0.00 $</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Outils Premium (masqués par défaut) ───────────── -->
+    <section id="premiumFeatures" style="display: none;" aria-label="Outils Premium">
+      <div class="d-flex justify-content-between align-items-center mt-4 mb-1">
+        <div class="d-flex align-items-center gap-2">
+          <span class="fw-bold" style="color: #d97706; font-size: 0.95rem;">🚀 Outils Business</span>
+          <span class="premium-badge">PREMIUM</span>
+        </div>
+        <button class="btn btn-outline-danger btn-sm py-0 px-2" onclick="verrouillerPremium()"
+          style="font-size: 0.75rem;" aria-label="Désactiver le mode Premium">
+          🔒 Déconnexion
+        </button>
+      </div>
+
+      <!-- Marge & Bénéfice -->
+      <div class="card-custom compta-tool shadow-sm" aria-labelledby="margeTitle">
+        <h3 id="margeTitle" class="fw-bold mb-2" style="font-size: 0.9rem; color: #059669;">📊 Marge & Bénéfice</h3>
+        <div class="row g-2">
+          <div class="col-6">
+            <label class="form-label small text-muted mb-1" for="achatUSD">Prix d'achat ($)</label>
+            <input type="number" inputmode="decimal" id="achatUSD" class="form-control form-control-sm"
+              placeholder="0.00" oninput="calculerCompta()">
+          </div>
+          <div class="col-6">
+            <label class="form-label small text-muted mb-1" for="venteCDF">Prix de vente (FC)</label>
+            <input type="number" inputmode="decimal" id="venteCDF" class="form-control form-control-sm" placeholder="0"
+              oninput="calculerCompta()">
+          </div>
+        </div>
+        <div id="resultMarge" class="fw-bold small mt-2" style="color: #059669;" role="status" aria-live="polite">
+          Bénéfice : 0 FC
+        </div>
+      </div>
+
+      <!-- Alerte Inflation -->
+      <div class="card-custom inflation-tool shadow-sm" aria-labelledby="inflationTitle">
+        <h3 id="inflationTitle" class="fw-bold mb-2" style="font-size: 0.9rem; color: #dc2626;">📉 Alerte Inflation</h3>
+        <div class="row g-2">
+          <div class="col-6">
+            <label class="form-label small text-muted mb-1" for="prixActuel">Prix actuel (FC)</label>
+            <input type="number" inputmode="decimal" id="prixActuel" class="form-control form-control-sm"
+              placeholder="0" oninput="calculerInflation()">
+          </div>
+          <div class="col-6">
+            <label class="form-label small text-muted mb-1" for="tauxFutur">Taux futur prévu</label>
+            <input type="number" inputmode="decimal" id="tauxFutur" class="form-control form-control-sm" placeholder="0"
+              oninput="calculerInflation()">
+          </div>
+        </div>
+        <div id="resultInflation" class="fw-bold small mt-2" style="color: #dc2626;" role="status" aria-live="polite">
+          Nouveau prix : 0 FC
+        </div>
+      </div>
+
+      <!-- Valeur du Stock -->
+      <div class="card-custom stock-tool shadow-sm" aria-labelledby="stockTitle">
+        <h3 id="stockTitle" class="fw-bold mb-2" style="font-size: 0.9rem; color: #d97706;">📦 Valeur du Stock</h3>
+        <div class="row g-2">
+          <div class="col-6">
+            <label class="form-label small text-muted mb-1" for="stockQty">Quantité</label>
+            <input type="number" inputmode="decimal" id="stockQty" class="form-control form-control-sm" placeholder="0"
+              oninput="calculerStock()">
+          </div>
+          <div class="col-6">
+            <label class="form-label small text-muted mb-1" for="unitPrice">Prix unitaire ($)</label>
+            <input type="number" inputmode="decimal" id="unitPrice" class="form-control form-control-sm"
+              placeholder="0.00" oninput="calculerStock()">
+          </div>
+        </div>
+        <div id="resultStock" class="fw-bold small mt-2" style="color: #d97706;" role="status" aria-live="polite">
+          Total Stock : 0 $
+        </div>
+      </div>
+
+      <!-- Frais Mobile Money -->
+      <div class="card-custom money-tool shadow-sm" aria-labelledby="fraisTitle">
+        <h3 id="fraisTitle" class="fw-bold mb-2" style="font-size: 0.9rem; color: #7c3aed;">💸 Frais de Retrait Mobile
+          Money</h3>
+        <label class="form-label small text-muted mb-1" for="montantRetrait">Montant à retirer (FC)</label>
+        <input type="number" inputmode="decimal" id="montantRetrait" class="form-control form-control-sm"
+          placeholder="0" oninput="calculerFrais()">
+        <div id="resultFrais" class="fw-bold small mt-2" style="color: #7c3aed;" role="status" aria-live="polite">
+          Frais estimés : 0 FC
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Tableau des banques ──────────────────────────── -->
+    <section class="mt-4" aria-labelledby="bankTableTitle">
+      <h2 id="bankTableTitle" class="visually-hidden">Taux par institution</h2>
+      <div class="table-responsive">
+        <table class="table table-sm table-hover align-middle mb-0" style="font-size: 0.84rem;"
+          aria-label="Taux de change par institution financière">
+          <thead class="visually-hidden">
+            <tr>
+              <th>Institution</th>
+              <th>Taux (FC)</th>
+              <th>Résultat</th>
+            </tr>
+          </thead>
+          <tbody id="tableBanques"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ── Graphique ────────────────────────────────────── -->
+    <div class="mt-3 chart-container" aria-label="Graphique des taux de change par banque" role="img">
+      <canvas id="monGraphique" style="max-height: 185px;"></canvas>
+    </div>
+
+    <!-- ── Commentaires Firebase ────────────────────────── -->
+    <section class="mt-4 pt-3 border-top" aria-labelledby="commentsTitle">
+      <h2 id="commentsTitle" class="fw-bold mb-3 d-flex align-items-center gap-2" style="font-size: 0.95rem;">
+        💬 Avis des utilisateurs
+      </h2>
+
+      <div id="listeDisplay" class="comment-box mb-3" role="feed" aria-label="Liste des avis"></div>
+
+      <div class="p-3 border rounded-4" style="background: var(--input-bg);">
+        <label class="visually-hidden" for="userName">Votre nom</label>
+        <input type="text" id="userName" class="form-control form-control-sm mb-2" placeholder="Votre nom (optionnel)"
+          maxlength="50" autocomplete="name">
+        <label class="visually-hidden" for="userComment">Votre message</label>
+        <textarea id="userComment" class="form-control form-control-sm mb-2" placeholder="Partagez votre avis…" rows="2"
+          maxlength="300" aria-label="Votre message"></textarea>
+        <button class="btn btn-primary btn-sm w-100 fw-bold py-2" id="btnFirebase" aria-label="Publier mon avis">
+          Publier mon avis ✈️
+        </button>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="text-center mt-4 pt-3 border-top">
+      <p class="text-muted mb-0" style="font-size: 0.75rem;">
+        Finance RDC Pro v2.7 · Développé par <strong>Exaucé Kisiabongo (UK)</strong><br>
+        <span style="font-size: 0.7rem; opacity: 0.7;">Taux fournis par Open Exchange Rates</span>
+      </p>
+    </footer>
+
+  </main><!-- /main -->
+
+  <!-- ── Scripts ────────────────────────────────────────── -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script type="module" src="script.js"></script>
+
+  <!-- Service Worker -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+          .then(reg => {
+            console.log('[PWA] Service Worker enregistré :', reg.scope);
+            // Vérifie si une mise à jour est disponible
+            reg.addEventListener('updatefound', () => {
+              const newWorker = reg.installing;
+              newWorker.addEventListener('statechange', () => {
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  // Nouvelle version disponible
+                  console.log('[PWA] Nouvelle version disponible.');
+                }
+              });
+            });
+          })
+          .catch(err => console.warn('[PWA] Erreur SW :', err));
+      });
     }
-    setTimeout(fermerSplash, 2800);
+  </script>
 
-    function activerPremiumUI(showAlert) {
-        document.getElementById('premiumFeatures').style.display = 'block';
-        document.getElementById('btnStatus').style.display = 'none';
-        localStorage.setItem('financeRDC_premium', 'true');
-        if(showAlert) alert("✅ Mode Premium activé avec succès !");
-    }
-
-    function verifierCode() {
-        const code = document.getElementById('licenseCode').value.trim().toUpperCase();
-        if(code === MON_CODE_PRO) {
-            activerPremiumUI(true);
-            fermerModal();
-        } else { alert("❌ Code incorrect."); }
-    }
-
-    function verrouillerPremium() {
-        if(confirm("Désactiver le mode Premium sur cet appareil ?")) {
-            localStorage.removeItem('financeRDC_premium');
-            location.reload();
-        }
-    }
-
-    function ouvrirModal() { document.getElementById('premiumModal').style.display = 'flex'; }
-    function fermerModal() { document.getElementById('premiumModal').style.display = 'none'; }
-    
-    function ouvrirPaiementDirect() { 
-        const numero = "243842317817"; 
-        const message = "Bonjour Exaucé, je souhaite acheter mon code Premium Finance RDC Pro (1 $).";
-        window.open(`https://wa.me/${numero}?text=${encodeURIComponent(message)}`, '_blank');
-    }
-
-    function partagerPourBonus() {
-        const text = "Salut ! Utilise Finance RDC Pro pour suivre le taux du dollar et calculer tes bénéfices commerçants en RDC : " + window.location.href;
-        window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
-    }
-
-    async function chargerTauxReels() {
-        try {
-            const res = await fetch('https://open.er-api.com/v6/latest/USD');
-            const data = await res.json();
-            const tauxRef = Math.round(data.rates.CDF);
-            tauxBanques[0].taux = tauxRef;
-            tauxBanques[1].taux = tauxRef - 15;
-            tauxBanques[2].taux = tauxRef - 10;
-            tauxBanques[3].taux = tauxRef - 25;
-            tauxBanques[4].taux = tauxRef - 5;
-        } catch(e) {}
-        document.getElementById('dateUpdate').innerText = "Vérifié le " + new Date().toLocaleDateString('fr-FR');
-        calculerTout();
-        if(localStorage.getItem('financeRDC_premium') === 'true') {
-            activerPremiumUI(false);
-        }
-    }
-
-    function calculerTout() {
-        const m = parseFloat(document.getElementById('montant').value) || 0;
-        const dir = document.getElementById('direction').value;
-        const tRef = tauxBanques[0].taux;
-        let final = (dir === "CDF_USD") ? (m / tRef).toFixed(2) + " $" : Math.round(m * tRef).toLocaleString() + " FC";
-        document.getElementById('resultat-principal').innerText = final;
-        const tbody = document.getElementById('tableBanques');
-        tbody.innerHTML = "";
-        tauxBanques.forEach(b => {
-            let conv = (dir === "CDF_USD") ? (m/b.taux).toFixed(2)+" $" : Math.round(m*b.taux).toLocaleString()+" FC";
-            tbody.innerHTML += `<tr><td>${b.nom}</td><td style="color:var(--primary);font-weight:bold;">${b.taux}</td><td>${conv}</td></tr>`;
-        });
-        genererGraphique();
-    }
-
-    function calculerCompta() {
-        const a = parseFloat(document.getElementById('achatUSD').value) || 0;
-        const v = parseFloat(document.getElementById('venteCDF').value) || 0;
-        const res = v - (a * tauxBanques[0].taux);
-        document.getElementById('resultMarge').innerText = "Bénéfice : " + Math.round(res).toLocaleString() + " FC";
-    }
-
-    function calculerStock() {
-        const q = parseFloat(document.getElementById('stockQty').value) || 0;
-        const p = parseFloat(document.getElementById('unitPrice').value) || 0;
-        document.getElementById('resultStock').innerText = "Total Stock : " + (q * p).toLocaleString() + " $";
-    }
-
-    function calculerInflation() {
-        const p = parseFloat(document.getElementById('prixActuel').value) || 0;
-        const f = parseFloat(document.getElementById('tauxFutur').value) || 0;
-        const tActuel = tauxBanques[0].taux;
-        if(tActuel > 0 && f > 0) {
-            const res = (p / tActuel) * f;
-            document.getElementById('resultInflation').innerText = "Nouveau prix : " + Math.round(res).toLocaleString() + " FC";
-        }
-    }
-
-    function calculerFrais() {
-        const m = parseFloat(document.getElementById('montantRetrait').value) || 0;
-        let frais = (m <= 10000) ? 800 : m * 0.03;
-        document.getElementById('resultFrais').innerText = "Frais : " + Math.round(frais).toLocaleString() + " FC";
-    }
-
-    let chart;
-    function genererGraphique() {
-        const ctx = document.getElementById('monGraphique').getContext('2d');
-        if(chart) chart.destroy();
-        chart = new Chart(ctx, {
-            type: 'bar',
-            data: { 
-                labels: tauxBanques.map(b => b.nom), 
-                datasets: [{ 
-                    label: 'Taux (FC)', 
-                    data: tauxBanques.map(b => b.taux), 
-                    backgroundColor: ['#007bff', '#2ecc71', '#f1c40f', '#e74c3c', '#9b59b6'] 
-                }] 
-            },
-            options: { 
-                scales: { y: { min: Math.min(...tauxBanques.map(b=>b.taux)) - 50 } }, 
-                plugins: { legend: { display: false } } 
-            }
-        });
-    }
-
-    function toggleAbout() { 
-        const s = document.getElementById('aboutSection'); 
-        s.style.display = (s.style.display === 'block' ? 'none' : 'block'); 
-    }
-
-    window.onload = chargerTauxReels;
-</script>
 </body>
+
 </html>

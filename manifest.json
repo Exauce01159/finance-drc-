@@ -1,20 +1,46 @@
 {
-  "short_name": "FinanceRDC",
-  "name": "Finance RDC Pro - Taux & Change",
+  "name": "Finance RDC Pro — Taux & Change",
+  "short_name": "Finance RDC",
+  "description": "Suivez le taux du dollar en temps réel, convertissez CDF ↔ USD et gérez vos bénéfices comme un pro.",
+  "lang": "fr",
+  "dir": "ltr",
+  "start_url": "index.html?source=pwa",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#ffffff",
+  "theme_color": "#1d4ed8",
+  "categories": ["finance", "business", "utilities"],
   "icons": [
     {
       "src": "icon-app.png",
       "type": "image/png",
-      "sizes": "192x192"
+      "sizes": "192x192",
+      "purpose": "any"
     },
     {
       "src": "icon-app.png",
       "type": "image/png",
-      "sizes": "512x512"
+      "sizes": "512x512",
+      "purpose": "any maskable"
     }
   ],
-  "start_url": "index.html",
-  "background_color": "#f0f2f5",
-  "display": "standalone",
-  "theme_color": "#007bff"
+  "shortcuts": [
+    {
+      "name": "Convertir CDF → USD",
+      "short_name": "CDF→USD",
+      "description": "Ouvrir le convertisseur Franc vers Dollar",
+      "url": "index.html?dir=CDF_USD&source=shortcut",
+      "icons": [{ "src": "icon-app.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Convertir USD → CDF",
+      "short_name": "USD→CDF",
+      "description": "Ouvrir le convertisseur Dollar vers Franc",
+      "url": "index.html?dir=USD_CDF&source=shortcut",
+      "icons": [{ "src": "icon-app.png", "sizes": "96x96" }]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false
 }
